@@ -51,6 +51,8 @@ These are marked with `<!-- TODO -->` comments directly in the HTML/JS wherever 
 | Phone number | `+919999999999` (used in `tel:+919999999999` links) | Header mobile nav, footer, mobile sticky bar, property action bar, contact page |
 | Business email | `enquiries@avanyatourism.example` (used in `mailto:` links) | Footer (every page), contact page, property action bar |
 | Formspree form ID | `YOUR_FORM_ID` in `action="https://formspree.io/f/YOUR_FORM_ID"` | `contact.html`, `travel-plan.html`, every generated `property/<slug>.html` (24 files — re-run `node scripts/generate-property-pages.js` after updating the ID in the generator script, or find-and-replace across the generated files directly) |
+| GTM container ID | `GTM_CONTAINER_ID = ''` (empty — analytics fully inert until set) | `js/analytics.js` — the one place to edit; every page picks it up automatically |
+| Meta Pixel ID | `META_PIXEL_ID = ''` (empty — Pixel not loaded until set) | `js/analytics.js` |
 | Canonical/OG URLs | `https://www.avanyatourism.example/...` | `<link rel="canonical">` and `og:url` in every page's `<head>` |
 | All listing content | 24 synthetic listings (14 Tourism + 10 Real Estate) in `js/data.js` | Names, descriptions, highlights, and prices are illustrative, not real inventory |
 | Homepage testimonial quote | Clearly labelled as an illustrative, unverified placeholder quote | `index.html`, "why Avanya" quote block |
@@ -78,6 +80,50 @@ These are marked with `<!-- TODO -->` comments directly in the HTML/JS wherever 
 There is no server-side includes mechanism in a pure static site, so the shared header, footer, mobile nav, and sticky bar are repeated by careful copy-paste across all 7 HTML pages rather than being defined once. Every internal link and contact placeholder was kept consistent across pages by hand at the time of writing. If this site grows past ~10–15 pages, it would be worth introducing either a static-site generator (e.g. Eleventy) or a tiny partial-include build step — deliberately out of scope for now, per the brief's "no build step" requirement.
 
 **Update (Phase 3):** `sitemap.xml` is no longer hand-written — `scripts/generate-sitemap.js` regenerates it from `js/data.js`. **Update (Phase 5):** the per-listing entries now point at each listing's real static file (`/property/<slug>.html`) rather than a `?slug=` query string on one shared page — see the Phase 5 section below for why that distinction turned out to matter far more than just tidiness (31 URLs total as of this commit: 7 static pages + 24 listings). Run `node scripts/generate-sitemap.js` after adding, removing, or unpublishing a listing, and commit the regenerated file.
+
+## Roadmap note: Phase 7 (Polish, Analytics & Phase-2-Ready Features)
+
+Phase 7 asks for analytics/conversion tracking, a real accessibility pass, a full-site cross-device re-verification, and a documentation-only check that BRD §26's Phase 2 features can be added later without breaking anything already built. All four had real, substantive work — this phase found and fixed two more genuine bugs on top of building the analytics layer from nothing.
+
+### Analytics & conversion tracking — built from scratch, verified as far as this environment allows
+
+`js/analytics.js` implements TAD §5.8's exact event taxonomy (`tourism_view`, `realestate_view`, `property_view`, `phone_click`, `whatsapp_click`, `email_click`, `enquiry_start`, `enquiry_submit`, `travel_plan_submit`, `buy_click`, `lease_click`) via Google Tag Manager, with Google Consent Mode v2 defaults (`denied` for every consent type) declared before anything else runs — the direct fix for this phase's own named key risk ("a Consent Mode misconfiguration blocking events"), except the more dangerous failure mode is the opposite of what that phrase suggests: an *undeclared* default doesn't block anything, it lets every tag fire ungoverned. Ships with **empty IDs by default**, matching this project's established placeholder pattern everywhere else — nothing reaches Google's or Meta's servers until real IDs are supplied (see the placeholder table below).
+
+**Wired into the real site, not just written**: `phone_click`/`whatsapp_click`/`email_click` fire site-wide via one delegated click listener (works against every `tel:`/`wa.me`/`mailto:` link automatically — header, footer, sticky bar, property pages — no per-link instrumentation needed); `tourism_view`/`realestate_view` fire on those pages' load; `property_view` fires on every generated listing page with its slug/module/type; `enquiry_start` fires on first form interaction, `enquiry_submit` (and, additionally, `travel_plan_submit` for the Custom Travel Plan form specifically) fire **only on genuine submission success** — verified live by deliberately triggering the Formspree-placeholder-ID failure path and confirming `enquiry_submit` correctly does *not* fire, so a failed submission can never look like a conversion; `buy_click`/`lease_click` fire when a visitor picks a transaction type on a dual-listing's Buy/Lease selector.
+
+**Verified**: 7 unit tests (`tests/analytics.test.js`) lock down the taxonomy and `track()`/`trackPageView()`/Consent-Mode-default logic under Node; every event above was also confirmed live in a browser by inspecting `window.dataLayer` directly after the triggering interaction — a real, current data point, not a guess.
+
+**What genuinely cannot be verified from this environment, stated honestly rather than glossed over**: this phase's own exit criteria ask for GA4/Search Console/Meta Pixel confirmed firing on a live non-localhost dashboard — that requires the business's own real GTM/GA4/Meta accounts and a live deployed URL, neither of which exist here. Once real IDs are in place (see the placeholder table) and the site is live, GTM's own Preview mode is the tool this file is built to work with unmodified — that verification step is a genuine launch prerequisite for the business to perform themselves, the same way Docker verification was left to the user in Phase 0.
+
+**A real gap, stated plainly**: there is no cookie-consent banner in this project, so `analytics_storage` stays `denied` even after a real GTM ID is added — meaning GA4 will not meaningfully track visitors until a real consent-management banner exists and updates that default to `granted`. Building a full CMP wasn't in scope for this phase; flagged here as a concrete pre-launch task, not silently left for someone to discover later.
+
+### Accessibility pass — found and fixed two more genuine, site-wide bugs
+
+Ran real Lighthouse (axe-core-based) accessibility audits against the homepage, a property detail page, and `contact.html` (the enquiry form screen this phase's exit criteria specifically names). Found:
+- **A heading-order violation on every single page**: the footer's three column headings ("Explore", "Locations", "Contact") were `<h4>`, immediately after the page's `<h1>`/`<h2>` content with no `<h3>` in between — a WCAG heading-hierarchy skip present since Phase 0, just first caught here. Fixed across all 33 files (every hand-authored page plus the property-page generator template, regenerated).
+- Re-ran after fixing: **Accessibility 100/100** on all three pages (homepage, a property page, contact.html).
+
+### Full-site cross-device sweep — found and fixed a real, previously-undetected layout bug
+
+Phase 5 verified cross-device behaviour on a handful of representative pages. This phase's own scope calls for repeating that "across the full built site," so all 10 unique page templates (home, tourism, real-estate, property detail, search, travel-plan, contact, about, 404) were checked at all four breakpoints (~360/768/1024/1440px) — 40 checks total, found one real failure:
+
+**`real-estate.html`'s price-range filter overflowed its row at ~1024px** — the min/max price inputs (100px each) plus a separator need ~220px, but the shared `.filter-field` container only guaranteed a 160px minimum width, so at this specific viewport width the field's content silently pushed past the page edge instead of wrapping to a new line (a classic flexbox gotcha: `flex-wrap` decides wrapping based on an item's flex-basis, not its actual rendered content width, so overflow past a too-small min-width doesn't trigger a wrap). Fixed with a dedicated `.filter-field-price-range { min-width: 230px; }` rule. Re-verified with all 40 checks passing clean.
+
+**A verification note worth recording**: confirming this fix took three attempts before it was trustworthy — the first two "confirmations" were false positives from this specific sandbox's aggressive per-origin browser HTTP caching (a `<link>` stylesheet kept serving a stale cached copy across full page navigations and even new tabs, despite `curl` confirming the server itself was serving the corrected file). Only running the check against a completely fresh port (eliminating any shared cache key) gave a trustworthy result. Documented here because it's a real lesson for anyone re-running this project's local verification steps: if a CSS fix doesn't seem to take effect after a normal reload, don't trust it or distrust it on a cached tab — verify against a fresh origin/port before concluding either way.
+
+### BRD §26 Phase 2 readiness — a documentation-only check, no new code
+
+Per this phase's explicit scope ("confirms the door is open, it does not walk through it"), for each BRD §26 Phase 2 item:
+
+| Phase 2 feature | Extends without a breaking change via | Notes |
+|---|---|---|
+| **Advanced filters** | New fields on plain listing objects in `js/data.js` (no schema to migrate) + a new predicate in `filters.js`'s `filterData()` | Already proven extensible — Phase 2's taxonomy refactor is exactly this pattern already exercised once |
+| **Testimonials** | A new `js/testimonials.js` data module, same shape as `js/taxonomy.js`/`js/data.js` | "Moderation" → hand-editing the file before committing, the same content-publish pattern Phase 6 documented for everything else |
+| **Blog/content hub** | A new `scripts/generate-article-pages.js`, copying `scripts/generate-property-pages.js`'s exact static-generation pattern | The per-listing static-page approach (Phase 5) is a direct, already-proven template |
+| **Related-property engine refinement** | `js/listing-rules.js`'s `findRelatedListings()` — a single, already-isolated pure function | Phase 3 already separated this logic from rendering/data concerns specifically so it could change independently |
+| **Investment-analytics fields** (Real Estate) | New fields on real-estate listing objects + new attribute-grid rows in the property-page generator | If any such field is genuinely internal-only, it follows the same denylist-tested pattern Phase 3 established for `internal_attributes` |
+| **Admin KPI dashboard** | The `dataLayer` events this phase just wired up | This phase's analytics work isn't just for Google's dashboards — it's the same event stream a future real KPI dashboard would consume, whenever a real backend exists to build one against |
+| **Partner dashboards** | *No extension path exists in this codebase* | Stated honestly rather than force-fit: this requires real partner accounts/auth, which is exactly the backend/database this project has deliberately excluded since Phase 1. Whatever backend eventually gets introduced to build a real admin panel (Phase 6) is what this would extend from — not anything in the current static site |
 
 ## Roadmap note: Phase 5 (Public Frontend) — the SSR/ISR requirement forced a real architecture fix
 

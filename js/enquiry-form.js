@@ -79,6 +79,19 @@
     var status = form.querySelector('.form-status');
     var submitBtn = form.querySelector('button[type="submit"]');
     var fields = qsa('input, textarea', form).filter(function (f) { return f.name && f.type !== 'hidden'; });
+    var enquiryStarted = false;
+
+    /* enquiry_start (TAD §5.8): fires once, on the first real interaction
+       with the form — not on page load, which would conflate "saw the
+       form" with "began filling it in." */
+    fields.forEach(function (field) {
+      field.addEventListener('focus', function () {
+        if (!enquiryStarted && window.AvanyaAnalytics) {
+          enquiryStarted = true;
+          window.AvanyaAnalytics.track('enquiry_start', { form_id: form.id || null });
+        }
+      }, { once: false });
+    });
 
     fields.forEach(function (field) {
       field.addEventListener('blur', function () { validateField(field); });
@@ -145,6 +158,17 @@
             status.className = 'form-status show success';
             status.textContent = 'Thank you — your enquiry has been sent. Our team will reach out shortly. Your reference: ' + payload.leadId + ' (quote this if you follow up).';
             form.reset();
+            if (window.AvanyaAnalytics) {
+              /* enquiry_submit fires for every successful submission;
+                 travel_plan_submit fires ADDITIONALLY (not instead) for the
+                 Custom Travel Plan form specifically, matching TAD §5.8
+                 listing both as distinct taxonomy entries rather than one
+                 subsuming the other. */
+              window.AvanyaAnalytics.track('enquiry_submit', { module: payload.module, enquiry_type: payload.enquiryType, lead_id: payload.leadId });
+              if (payload.enquiryType === 'travel_plan') {
+                window.AvanyaAnalytics.track('travel_plan_submit', { lead_id: payload.leadId });
+              }
+            }
           } else {
             return response.json().then(function (data) {
               throw new Error((data && data.errors && data.errors.map(function (er) { return er.message; }).join(', ')) || 'Submission failed.');

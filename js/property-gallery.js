@@ -71,11 +71,28 @@
     if (!select || !input) return;
     select.addEventListener('change', function () {
       input.value = select.value;
+      /* buy_click / lease_click (TAD §5.8): fires when a visitor expresses
+         buy-vs-lease intent on a dual-transaction-type listing — the
+         single-transaction-type case (hidden input set once at generation
+         time, no select shown) has no comparable "click" to track, since
+         there's no choice being made. */
+      if (window.AvanyaAnalytics && (select.value === 'buy' || select.value === 'lease')) {
+        window.AvanyaAnalytics.track(select.value + '_click', { slug: qs('#gallery-main') ? qs('#gallery-main').dataset.slug : undefined });
+      }
     });
+  }
+
+  function trackPropertyView() {
+    var mainGallery = qs('#gallery-main');
+    if (!mainGallery || !mainGallery.dataset.slug || !window.AvanyaAnalytics || !window.AvanyaData) return;
+    var item = window.AvanyaData.findBySlug(mainGallery.dataset.slug);
+    if (!item) return;
+    window.AvanyaAnalytics.track('property_view', { slug: item.slug, module: item.module, property_type: item.propertyType });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     initGallery();
     initEnquiryTypeSync();
+    trackPropertyView();
   });
 })();

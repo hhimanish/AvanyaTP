@@ -512,6 +512,13 @@ body.nav-open .mobile-nav { display: flex; }
 
 .price-range-inputs { display: flex; align-items: center; gap: var(--sp-2); }
 .price-range-inputs input { width: 100px; }
+/* Real bug found during Phase 7's site-wide cross-device sweep: two 100px
+   inputs + separator need ~220px, but .filter-field's shared 160px
+   min-width let this specific field overflow its row at ~1024px viewport
+   widths (flex-wrap doesn't push a flex item to the next line just because
+   its content exceeds its own min-width — it wraps based on the item's
+   flex-basis, so the overflow was silent rather than triggering a wrap). */
+.filter-field-price-range { min-width: 230px; }
 
 .chip-group {
   display: flex;

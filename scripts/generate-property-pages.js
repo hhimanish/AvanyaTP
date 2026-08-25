@@ -235,6 +235,7 @@ function pageHTML(item) {
 '<html lang="en">\n' +
 '<head>\n' +
 '<meta charset="UTF-8">\n' +
+'<script src="../js/analytics.js"></script>\n' +
 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
 '<title>' + escapeXml(item.name + ' — ' + locationName + ' | Avanya') + '</title>\n' +
 '<meta name="description" content="' + escapeXml(metaDescription) + '">\n' +
@@ -412,7 +413,7 @@ listings.placeholderSVG(galleryImages[0], item.name, { hideTitle: true, alt: ite
 '        </div>\n' +
 '      </div>\n' +
 '      <div>\n' +
-'        <h4>Explore</h4>\n' +
+'        <h3>Explore</h3>\n' +
 '        <ul>\n' +
 '          <li><a href="../tourism.html">Tourism</a></li>\n' +
 '          <li><a href="../real-estate.html">Real Estate</a></li>\n' +
@@ -421,7 +422,7 @@ listings.placeholderSVG(galleryImages[0], item.name, { hideTitle: true, alt: ite
 '        </ul>\n' +
 '      </div>\n' +
 '      <div>\n' +
-'        <h4>Locations</h4>\n' +
+'        <h3>Locations</h3>\n' +
 '        <ul>\n' +
 '          <li><a href="../tourism.html?location=darjeeling">Darjeeling</a></li>\n' +
 '          <li><a href="../tourism.html?location=kalimpong">Kalimpong</a></li>\n' +
@@ -430,7 +431,7 @@ listings.placeholderSVG(galleryImages[0], item.name, { hideTitle: true, alt: ite
 '        </ul>\n' +
 '      </div>\n' +
 '      <div>\n' +
-'        <h4>Contact</h4>\n' +
+'        <h3>Contact</h3>\n' +
 '        <ul>\n' +
 '          <li><a href="https://wa.me/919999999999">WhatsApp: +91 99999 99999</a></li>\n' +
 '          <li><a href="tel:+919999999999">Call: +91 99999 99999</a></li>\n' +
