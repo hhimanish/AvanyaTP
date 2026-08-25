@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Avanya — North Bengal Digital Discovery Platform, share image placeholder featuring stylised mountains, tea rows, and a winding river">
+  <defs>
+    <linearGradient id="ogbg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1f4d3a"/>
+      <stop offset="100%" stop-color="#0c231b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ogbg)"/>
+  <path d="M0 420 L200 220 L340 340 L520 140 L700 340 L900 200 L1200 420 L1200 630 L0 630 Z" fill="rgba(255,255,255,0.10)"/>
+  <path d="M0 470 L180 320 L320 420 L500 260 L680 420 L880 300 L1200 470 L1200 630 L0 630 Z" fill="rgba(255,255,255,0.16)"/>
+  <path d="M0 560 C 100 530, 180 590, 280 555 S 460 520, 560 555 S 740 590, 840 555 S 1020 520, 1200 555 L1200 630 L0 630 Z" fill="#2e6e7e" opacity="0.7"/>
+  <text x="90" y="150" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#faf6ee" font-weight="700">Avanya</text>
+  <text x="90" y="200" font-family="Arial, sans-serif" font-size="26" letter-spacing="2" fill="#c08a2e">NORTH BENGAL DIGITAL DISCOVERY PLATFORM</text>
+</svg>
