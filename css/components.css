@@ -107,26 +107,33 @@
   white-space: nowrap;
 }
 
-/* Below ~480px, repeated real-device testing (360px, 375px, and actual
-   phone screenshots at what should have been comfortable widths) kept
-   finding "Avanya Tourism" + the tagline truncated even after several
-   rounds of shrinking the brand and the header's other controls — most
-   likely because Android's own accessibility text-size scaling inflates
-   rem-based font sizes without changing the reported viewport width, so a
-   fixed px budget calculated at one font scale doesn't hold at another.
-   Rather than keep shrinking text against a moving target, remove the
-   competition instead: the header's "Enquire Now" button is redundant
-   below this width anyway, since .sticky-bar (shown below 767px, see its
-   own rule further down) already surfaces Call/WhatsApp/Enquire at the
-   bottom of the screen. Hiding it frees enough width that the brand can
-   stay close to its full size and still comfortably fit, with real margin
-   against font-scale variance rather than a knife's-edge fit. */
+/* Below ~480px, everything in the header competes for the same narrow
+   row: the brand (name + tagline), the Enquire Now button, and the
+   hamburger. Keeping "Enquire Now" visible (rather than hiding it, as a
+   previous iteration tried) means every element has to give up some
+   size — the button shrinks the most since its own label has slack a
+   heading doesn't, the brand shrinks more modestly so the name and
+   tagline both stay legible. */
 @media (max-width: 480px) {
-  .brand { font-size: 1.1rem; gap: var(--sp-2); align-items: center; }
-  .brand svg { width: 32px; height: 32px; }
-  .brand img { height: 32px; }
-  .brand .tagline { font-size: 0.6rem; }
-  .site-header .nav-actions .btn { display: none; }
+  .brand { font-size: 0.92rem; gap: var(--sp-1); align-items: center; }
+  .brand svg { width: 26px; height: 26px; }
+  .brand img { height: 26px; }
+  .brand .tagline { font-size: 0.52rem; }
+  .site-header .nav-actions { gap: var(--sp-1); }
+  .site-header .nav-actions .btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.01em;
+    /* Safety net matching .brand's: if some combination of narrow width
+       and font-scaling still leaves too little room, truncate the button
+       label instead of forcing the row to wrap or overlap. */
+    max-width: 6.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .site-header .hamburger { width: 30px; height: 30px; }
+  .site-header .hamburger span { width: 18px; }
 }
 
 .main-nav {
