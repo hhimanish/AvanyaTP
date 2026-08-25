@@ -33,7 +33,7 @@
     if (!target || !(root.AvanyaListingRules && root.AvanyaListingRules.isPubliclyVisible(target))) {
       return null;
     }
-    return 'property.html?slug=' + encodeURIComponent(match.to);
+    return 'property/' + encodeURIComponent(match.to) + '.html';
   }
 
   root.AvanyaRedirects = {

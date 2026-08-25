@@ -75,7 +75,7 @@
         propertyType: item.propertyType,
         location: item.location,
         placeholderTheme: item.placeholderTheme,
-        href: 'property.html?slug=' + encodeURIComponent(item.slug)
+        href: 'property/' + encodeURIComponent(item.slug) + '.html'
       };
     });
   }

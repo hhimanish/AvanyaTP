@@ -1,3 +1,82 @@
+# Explicit AI-crawler policy, per this project's own documented AI-search-
+# visibility architecture decision. Previously this file was a bare
+# "User-agent: * / Allow: /" with no per-crawler distinction at all; now it
+# implements four groups deliberately: retrieval/citation crawlers (allowed,
+# since being cited in an AI answer is a genuine discovery channel this
+# public marketing/discovery site wants), training-data crawlers (allowed,
+# since this site has no proprietary content worth withholding), training
+# opt-out tokens (disallowed — Google/Apple's own documented way to keep
+# full Search/Siri/Spotlight visibility while declining model-training use;
+# a safe, zero-cost default), and undocumented/opaque crawlers (disallowed
+# by default until their behaviour is actually documented).
+
+# Retrieval / citation crawlers — allowed. These fetch a page specifically to
+# answer or cite it in response to a user's question, which is a real
+# discovery channel for a public site like this one.
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+# Training-data crawlers — allowed. This is a public marketing/discovery
+# site with no proprietary or paywalled content, so there is nothing here
+# worth withholding from model-training crawls (the same reasoning that
+# makes Allow: / this site's long-standing default for everyone else).
+# Note: ClaudeBot is used for both citation and training in practice: it
+# gets one Allow entry above and is not duplicated here.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# Training opt-out tokens — disallowed. These are Google's and Apple's own
+# documented tokens for declining model-training use of a page while
+# preserving full visibility in Google Search / Siri / Spotlight (handled by
+# Googlebot / Applebot above, which are not blocked) — a safe, zero-cost
+# default with no visibility downside.
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+# Undocumented / opaque crawlers — disallowed by default until their
+# behaviour is actually documented.
+User-agent: Bytespider
+Disallow: /
+
+# TODO before launch: xAI/Grok's crawler identifies itself with a specific
+# user-agent token, but this could not be confirmed reliably at the time
+# this file was written — verify the exact current token (check
+# https://docs.x.ai or xAI's published crawler documentation) and replace
+# the placeholder line below with it, rather than leaving it disallowed
+# under a guessed name.
+# User-agent: <verify-xai-grok-crawler-token-before-launch>
+# Disallow: /
+
 User-agent: *
 Allow: /
 Disallow: /404.html

@@ -221,7 +221,12 @@ body.nav-open .mobile-nav { display: flex; }
 .sticky-bar li:nth-child(3) a { color: var(--color-forest-dark); }
 .sticky-bar li:nth-child(3) svg { color: var(--color-accent); }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
+  /* 767px, not 768px: the Development Environment doc's own verification
+     step is explicit that 768px is "the exact width where the sticky
+     mobile bar disappears" - a max-width of 768px (inclusive) would keep
+     it visible exactly at that breakpoint, which is wrong. Found via this
+     phase's Cross-Device & Responsive Verification pass. */
   .sticky-bar { display: block; }
   body { padding-bottom: var(--sticky-bar-height); }
 }
@@ -697,7 +702,7 @@ body.nav-open .mobile-nav { display: flex; }
 
 /* ---------- Misc ---------- */
 .breadcrumb { font-size: var(--fs-sm); color: var(--color-text-soft); margin-bottom: var(--sp-5); }
-.breadcrumb a { color: var(--color-river); }
+.breadcrumb a { color: var(--color-river); text-decoration: underline; text-underline-offset: 2px; }
 .page-hero { padding: var(--sp-7) 0 var(--sp-6); background: var(--color-forest-light); }
 .page-hero p { max-width: 60ch; }
 

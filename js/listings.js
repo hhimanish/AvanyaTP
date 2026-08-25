@@ -1,7 +1,9 @@
 /* Shared listing-card rendering, used by tourism.html and real-estate.html
-   (and reused by property-detail.js for gallery/related placeholders). */
+   (and reused by property-detail.js/property-gallery.js for gallery/related
+   placeholders, and by scripts/generate-property-pages.js under Node to bake
+   the same gallery placeholders into the static property/*.html pages). */
 
-(function () {
+(function (root) {
   var THEME_COLORS = {
     forest: ['#1f4d3a', '#123328'],
     river: ['#2e6e7e', '#123339'],
@@ -59,10 +61,20 @@
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
   }
 
+  /* detailUrl() is also used directly by scripts/generate-property-pages.js
+     (Node) and js/search.js so the "link to a listing's detail page" rule
+     lives in exactly one place. Static file per listing (property/<slug>.html),
+     not a property.html?slug= query string — see docs/ (Task 1/2 of the
+     AI-crawler-visibility fix): a raw-HTML-only crawler never executes the JS
+     that used to render this page's content from the query string. */
+  function detailUrl(slug) {
+    return 'property/' + encodeURIComponent(slug) + '.html';
+  }
+
   function cardHTML(item) {
-    var data = window.AvanyaData;
+    var data = root.AvanyaData;
     var locationName = data.getLocationName(item.location);
-    var detailUrl = 'property.html?slug=' + encodeURIComponent(item.slug);
+    var url = detailUrl(item.slug);
     var badges = '';
     var tags = '';
 
@@ -81,16 +93,16 @@
 
     return '' +
       '<article class="listing-card">' +
-      '<a href="' + detailUrl + '" class="card-media" aria-label="View ' + escapeXml(item.name) + '">' +
+      '<a href="' + url + '" class="card-media" aria-label="' + escapeXml(item.name) + '">' +
       badges +
       placeholderSVG(item.placeholderTheme, item.name, { alt: item.name + ' — ' + locationName + ' placeholder image' }) +
       '</a>' +
       '<div class="card-body">' +
-      '<h3><a href="' + detailUrl + '">' + escapeXml(item.name) + '</a></h3>' +
+      '<h3><a href="' + url + '">' + escapeXml(item.name) + '</a></h3>' +
       '<div class="card-location">' + locationIconSVG() + '<span>' + locationName + '</span></div>' +
       '<div class="card-tags">' + tags + '</div>' +
       '</div>' +
-      '<div class="card-cta"><a class="btn btn-outline btn-block btn-sm" href="' + detailUrl + '">View Details</a></div>' +
+      '<div class="card-cta"><a class="btn btn-outline btn-block btn-sm" href="' + url + '">View Details</a></div>' +
       '</article>';
   }
 
@@ -103,10 +115,11 @@
     return true;
   }
 
-  window.AvanyaListings = {
+  root.AvanyaListings = {
     placeholderSVG: placeholderSVG,
     cardHTML: cardHTML,
     renderGrid: renderGrid,
+    detailUrl: detailUrl,
     escapeXml: escapeXml
   };
-})();
+})(typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : this));
