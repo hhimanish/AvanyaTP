@@ -230,15 +230,15 @@
       ]
     },
     {
-      slug: 'kaffer-birding-farm-stay',
+      slug: 'paren-birding-farm-stay',
       module: 'tourism',
       status: 'published',
-      name: 'Kaffer Birding Farm Stay',
-      location: 'kaffer',
+      name: 'Paren Birding Farm Stay',
+      location: 'paren',
       propertyType: 'Farm Stay',
       experienceTags: ['wildlife-forest', 'tea-garden-stays'],
       placeholderTheme: 'tea-garden',
-      description: 'A small organic farm and known birding spot near Kaffer, popular with serious birders chasing the region’s high-altitude species list. Simple rooms, farm produce meals, and a resident guide with a decades-long local list.',
+      description: 'A small organic farm and known birding spot near Paren, popular with serious birders chasing the region’s high-altitude species list. Simple rooms, farm produce meals, and a resident guide with a decades-long local list.',
       highlights: [
         'Resident birding guide with a 300+ species local list',
         'Organic farm produce used in every meal',
@@ -247,18 +247,18 @@
       ]
     },
     {
-      slug: 'kaffer-hilltop-heritage-bungalow',
+      slug: 'paren-hilltop-heritage-bungalow',
       module: 'tourism',
       status: 'published',
-      name: 'Kaffer Hilltop Heritage Bungalow',
-      location: 'kaffer',
+      name: 'Paren Hilltop Heritage Bungalow',
+      location: 'paren',
       propertyType: 'Heritage Bungalow',
       experienceTags: ['heritage-colonial'],
       placeholderTheme: 'heritage',
-      description: 'A restored forest-department era bungalow on Kaffer’s highest point, once used by touring foresters and now opened to guests in small numbers. Simple, dignified interiors and one of the widest panoramas in the region.',
+      description: 'A restored forest-department era bungalow on Paren’s highest point, once used by touring foresters and now opened to guests in small numbers. Simple, dignified interiors and one of the widest panoramas in the region.',
       highlights: [
         'Former forest-department inspection bungalow',
-        'Widest panoramic viewpoint in the Kaffer belt',
+        'Widest panoramic viewpoint in the Paren belt',
         'Limited to two rooms for privacy',
         'Caretaker-cooked regional meals on request'
       ]
@@ -438,17 +438,17 @@
       ]
     },
     {
-      slug: 'kaffer-boutique-hotel-lease',
+      slug: 'paren-boutique-hotel-lease',
       module: 'real-estate',
       status: 'published',
-      name: 'Kaffer Boutique Hotel, Operator Lease',
-      location: 'kaffer',
+      name: 'Paren Boutique Hotel, Operator Lease',
+      location: 'paren',
       propertyType: 'Hotel',
       transactionType: ['lease'],
       priceLabel: '₹ 1,25,000 / month',
       priceValue: 125000,
       placeholderTheme: 'tea-garden',
-      description: 'A twelve-room boutique hotel building available on operator lease, positioned along Kaffer’s main viewpoint road. Owner is seeking an experienced hospitality operator rather than a passive tenant.',
+      description: 'A twelve-room boutique hotel building available on operator lease, positioned along Paren’s main viewpoint road. Owner is seeking an experienced hospitality operator rather than a passive tenant.',
       highlights: [
         'Twelve rooms, positioned on the main viewpoint road',
         'Owner prefers an experienced hospitality operator',

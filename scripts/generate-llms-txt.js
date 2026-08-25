@@ -50,7 +50,7 @@ function section(title, pages) {
 }
 
 var content = '# Avanya\n\n' +
-  '> Avanya is a North Bengal-focused discovery platform for Tourism stays and Real Estate — Darjeeling, Kalimpong, Kurseong, Mirik, Dooars, Lava, and Kaffer. Discovery only: no online bookings or payments; every listing links to a direct enquiry (WhatsApp, call, or email).\n\n' +
+  '> Avanya is a North Bengal-focused discovery platform for Tourism stays and Real Estate — Darjeeling, Kalimpong, Kurseong, Mirik, Dooars, Lava, and Paren. Discovery only: no online bookings or payments; every listing links to a direct enquiry (WhatsApp, call, or email).\n\n' +
   section('Core Pages', corePages) + '\n' +
   section('Tourism by Location', locationPages) + '\n' +
   '## Notes\n\n' +

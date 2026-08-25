@@ -7,7 +7,7 @@
 
   var LOCATION_THEME = {
     darjeeling: 'heritage', kalimpong: 'forest', kurseong: 'tea-garden',
-    mirik: 'river', dooars: 'forest', lava: 'heritage', kaffer: 'tea-garden'
+    mirik: 'river', dooars: 'forest', lava: 'heritage', paren: 'tea-garden'
   };
 
   function cardHTML(loc, tourismCount, realEstateCount) {

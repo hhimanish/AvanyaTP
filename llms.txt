@@ -1,6 +1,6 @@
 # Avanya
 
-> Avanya is a North Bengal-focused discovery platform for Tourism stays and Real Estate — Darjeeling, Kalimpong, Kurseong, Mirik, Dooars, Lava, and Kaffer. Discovery only: no online bookings or payments; every listing links to a direct enquiry (WhatsApp, call, or email).
+> Avanya is a North Bengal-focused discovery platform for Tourism stays and Real Estate — Darjeeling, Kalimpong, Kurseong, Mirik, Dooars, Lava, and Paren. Discovery only: no online bookings or payments; every listing links to a direct enquiry (WhatsApp, call, or email).
 
 ## Core Pages
 
@@ -22,7 +22,7 @@
 - [Tourism in Mirik](https://www.avanyatourism.example/tourism.html?location=mirik): Tourism stays filtered to Mirik, North Bengal.
 - [Tourism in Dooars](https://www.avanyatourism.example/tourism.html?location=dooars): Tourism stays filtered to Dooars, North Bengal.
 - [Tourism in Lava](https://www.avanyatourism.example/tourism.html?location=lava): Tourism stays filtered to Lava, North Bengal.
-- [Tourism in Kaffer](https://www.avanyatourism.example/tourism.html?location=kaffer): Tourism stays filtered to Kaffer, North Bengal.
+- [Tourism in Paren](https://www.avanyatourism.example/tourism.html?location=paren): Tourism stays filtered to Paren, North Bengal.
 
 ## Notes
 

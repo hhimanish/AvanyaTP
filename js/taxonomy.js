@@ -36,7 +36,7 @@
     { id: 'loc-mirik', slug: 'mirik', name: 'Mirik', verticalScope: 'both', status: 'published', sortOrder: 4 },
     { id: 'loc-dooars', slug: 'dooars', name: 'Dooars', verticalScope: 'both', status: 'published', sortOrder: 5 },
     { id: 'loc-lava', slug: 'lava', name: 'Lava', verticalScope: 'both', status: 'published', sortOrder: 6 },
-    { id: 'loc-kaffer', slug: 'kaffer', name: 'Kaffer', verticalScope: 'both', status: 'published', sortOrder: 7 }
+    { id: 'loc-paren', slug: 'paren', name: 'Paren', verticalScope: 'both', status: 'published', sortOrder: 7 }
   ];
 
   /* ---------------------------------------------------------------------

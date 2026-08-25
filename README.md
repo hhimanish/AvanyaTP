@@ -1,6 +1,6 @@
 # Avanya — North Bengal Digital Discovery Platform
 
-A static, dependency-free website for Avanya: a two-vertical discovery platform (Tourism + Real Estate) for North Bengal — Darjeeling, Kalimpong, Kurseong, Mirik, Dooars, Lava, and Kaffer. Plain HTML + CSS + vanilla JavaScript only. No framework, no npm dependency, no server, no database. Small standalone Node scripts (`scripts/*.js`) are used purely for one-time/repeatable static-file generation (sitemap, `llms.txt`, per-listing pages) — never a runtime build step, never a project dependency.
+A static, dependency-free website for Avanya: a two-vertical discovery platform (Tourism + Real Estate) for North Bengal — Darjeeling, Kalimpong, Kurseong, Mirik, Dooars, Lava, and Paren. Plain HTML + CSS + vanilla JavaScript only. No framework, no npm dependency, no server, no database. Small standalone Node scripts (`scripts/*.js`) are used purely for one-time/repeatable static-file generation (sitemap, `llms.txt`, per-listing pages) — never a runtime build step, never a project dependency.
 
 ## What this is
 

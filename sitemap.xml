@@ -119,12 +119,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.avanyatourism.example/property/kaffer-birding-farm-stay.html</loc>
+    <loc>https://www.avanyatourism.example/property/paren-birding-farm-stay.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.avanyatourism.example/property/kaffer-hilltop-heritage-bungalow.html</loc>
+    <loc>https://www.avanyatourism.example/property/paren-hilltop-heritage-bungalow.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -174,7 +174,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.avanyatourism.example/property/kaffer-boutique-hotel-lease.html</loc>
+    <loc>https://www.avanyatourism.example/property/paren-boutique-hotel-lease.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
