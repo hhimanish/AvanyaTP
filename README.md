@@ -162,6 +162,20 @@ The original Implementation Roadmap's Phase 2 specifies "Locations, Experiences,
 - Per the API Design document's own stated decision (reproduced here deliberately): there is **no** `getPropertyTypeBySlug()` accessor — no page in this site needs a property-type detail view, so none was added. Confirmed by a test.
 - **Bug found and fixed during this phase's verification**: `initTourism()` and `initRealEstate()` in `filters.js` both keyed off `#listing-grid`, an ID present on both `tourism.html` and `real-estate.html` — so on `tourism.html`, the real-estate initializer also ran and crashed reading fields (`#filter-transaction`, min/max price) that don't exist on that page. This was pre-existing (not introduced by Phase 2) but had never been caught because the site had only been verified by hand-tracing logic, never actually run in a live browser. Fixed by tagging each page's `<body>` with `data-page="tourism"` / `data-page="real-estate"` and gating each initializer on it. Caught by running the site through a real local server and checking the browser console — worth remembering for future phases.
 
+## Roadmap note: Phase 6 (Admin Panel UI) — deliberately not built
+
+The roadmap's Phase 6 is, in full, an internal staff tool: content-management CRUD screens, a lead/enquiry dashboard with bulk actions and CSV export, a DPDP right-to-erasure control, staff/role management, and role-scoped navigation across five admin roles. Every one of those is an admin panel backed by a database and real authentication — precisely what Phase 1 already established doesn't exist in this project and won't be built ahead of an actual need.
+
+Phase 5 (Public Frontend) had substantial real work behind its re-scoping because the *visitor-facing* site genuinely existed already and needed real fixes (the AI-crawler rendering gap, structured data, accessibility). Phase 6 has no equivalent: there is no honest static-site translation of "a secure, role-gated internal dashboard," because a client-side-only admin panel isn't a lesser version of the real thing — it's actively worse than having none. Anyone could view-source past a JS-only login gate; a "Property Manager can only see their assigned Real Estate listings" restriction enforced only in the browser is not a restriction at all. Building that would be security theatre, not a smaller admin panel.
+
+What already substitutes for each piece of Phase 6's intent, honestly, without a backend:
+- **Content management** → hand-editing `js/data.js`, `js/taxonomy.js`, `js/redirects.js` directly in source control, the same pattern used since Phase 2. A `git commit` *is* this project's publish action.
+- **Lead/enquiry management** (list, status, export, erasure) → Formspree's own dashboard (Phase 4's documented equivalent) — view, export, and delete submissions there.
+- **SEO Metadata editing** → the per-page `<title>`/`<meta description>`/canonical/OG tags are already hand-authored (static pages) or generated (`property/<slug>.html`, via `scripts/generate-property-pages.js`) directly in the files; there's no separate metadata layer to expose a UI over.
+- **Staff/role management** → doesn't apply; there are no staff accounts, because there's no login.
+
+If a real admin need ever arises — multiple non-technical people needing to publish listings without touching code — that's the point to introduce an actual backend (even a minimal one, e.g. a headless CMS or a small serverless API with real auth) and revisit this phase against it, not to retrofit a fake one now.
+
 ## Roadmap note: Phase 1 (Auth & RBAC) — deliberately not built
 
 The project's original Implementation Roadmap specified a "Phase 1 — Auth & RBAC": JWT access/refresh tokens, Argon2 password hashing, and a five-role RBAC matrix enforced by backend guards. That phase exists to protect an **admin panel** backed by a **database of admin accounts** — neither of which exists in this build. The project was deliberately re-scoped to a zero-backend, zero-database static site (no admin panel, no CRM), so there is nothing for authentication or role-based access control to protect.
