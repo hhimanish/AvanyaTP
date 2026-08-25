@@ -422,12 +422,11 @@ listings.placeholderSVG(galleryImages[0], item.name, { hideTitle: true, alt: ite
 '        </ul>\n' +
 '      </div>\n' +
 '      <div>\n' +
-'        <h3>Locations</h3>\n' +
+'        <h3>Discover</h3>\n' +
 '        <ul>\n' +
-'          <li><a href="../tourism.html?location=darjeeling">Darjeeling</a></li>\n' +
-'          <li><a href="../tourism.html?location=kalimpong">Kalimpong</a></li>\n' +
-'          <li><a href="../tourism.html?location=dooars">Dooars</a></li>\n' +
-'          <li><a href="../tourism.html?location=mirik">Mirik</a></li>\n' +
+'          <li><a href="../blog.html">Blog</a></li>\n' +
+'          <li><a href="../north-bengal.html">North Bengal</a></li>\n' +
+'          <li><a href="../things-to-do.html">Things to Do</a></li>\n' +
 '        </ul>\n' +
 '      </div>\n' +
 '      <div>\n' +

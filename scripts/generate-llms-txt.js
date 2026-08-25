@@ -29,7 +29,9 @@ var corePages = [
   { title: 'Search', loc: '/search.html', desc: 'Free-text search across Tourism stays, Real Estate listings, locations, and experience tags.' },
   { title: 'Plan a Custom Trip', loc: '/travel-plan.html', desc: 'Request a hand-picked North Bengal itinerary by submitting travel dates, group size, and interests.' },
   { title: 'About', loc: '/about.html', desc: 'Avanya\'s story, mission, and the seven North Bengal locations it operates in.' },
-  { title: 'Contact', loc: '/contact.html', desc: 'Send Avanya a general enquiry, or reach the team directly by WhatsApp, phone, or email.' }
+  { title: 'Contact', loc: '/contact.html', desc: 'Send Avanya a general enquiry, or reach the team directly by WhatsApp, phone, or email.' },
+  { title: 'North Bengal', loc: '/north-bengal.html', desc: 'All seven North Bengal locations Avanya covers, each linking to its Tourism stays and Real Estate listings.' },
+  { title: 'Things to Do', loc: '/things-to-do.html', desc: 'Browse North Bengal by experience — mountain views, tea-garden stays, river-front, wildlife/forest, heritage & colonial — each linking to matching Tourism stays.' }
 ];
 
 var locationPages = taxonomy.getLocations().map(function (loc) {

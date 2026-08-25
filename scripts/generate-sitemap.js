@@ -39,7 +39,10 @@ var staticPages = [
   { loc: '/travel-plan.html', changefreq: 'monthly', priority: '0.6' },
   { loc: '/search.html', changefreq: 'monthly', priority: '0.4' },
   { loc: '/about.html', changefreq: 'monthly', priority: '0.6' },
-  { loc: '/contact.html', changefreq: 'monthly', priority: '0.7' }
+  { loc: '/contact.html', changefreq: 'monthly', priority: '0.7' },
+  { loc: '/north-bengal.html', changefreq: 'monthly', priority: '0.6' },
+  { loc: '/things-to-do.html', changefreq: 'monthly', priority: '0.6' },
+  { loc: '/blog.html', changefreq: 'monthly', priority: '0.3' }
 ];
 
 var propertyEntries = listingRules.getPublishedListings(data.ALL_LISTINGS).map(function (item) {
