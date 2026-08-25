@@ -113,10 +113,19 @@
    into the hero section below it. Drop to a single-line "Avanya" mark and
    hide the decorative tagline rather than let the header grow tall. */
 @media (max-width: 480px) {
-  .brand { font-size: 1.05rem; gap: var(--sp-2); }
-  .brand svg { width: 28px; height: 28px; }
-  .brand img { height: 30px; }
+  .brand { font-size: 0.95rem; gap: var(--sp-1); }
+  .brand svg { width: 26px; height: 26px; }
+  .brand img { height: 26px; }
   .brand .tagline { display: none; }
+  /* "Avanya Tourism" was still measured to overflow its available space by
+     ~8px at 360px width (one of the most common real Android viewport
+     widths) even after the brand itself shrank — the ellipsis safety net
+     was catching it, but silently truncating a real word is still a
+     visible defect, not a fix. Reclaim that margin from the header's other
+     side instead of shrinking the brand further. */
+  .site-header .nav-actions { gap: var(--sp-2); }
+  .site-header .nav-actions .btn { padding: 0.45rem 0.7rem; font-size: 0.7rem; }
+  .site-header .hamburger { width: 34px; height: 34px; }
 }
 
 .main-nav {
