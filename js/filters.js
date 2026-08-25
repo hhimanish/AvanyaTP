@@ -22,6 +22,42 @@
     return haystack.indexOf(query.toLowerCase()) !== -1;
   }
 
+  /* Phase 2 (Core Taxonomy): populate a filter <select>'s options directly from
+     js/taxonomy.js rather than relying on the hand-written <option> tags already
+     in the HTML — this is what keeps the filter UI and the taxonomy's single
+     source of truth from ever silently drifting apart. The existing static
+     <option> markup stays in the HTML as a no-JS fallback (progressive
+     enhancement), and is fully replaced once this runs. `allLabel` is the
+     "All Locations" / "All Types" placeholder option, preserved at the top. */
+  function populateSelect(select, allLabel, options) {
+    if (!select) return;
+    var current = select.value;
+    select.innerHTML = '';
+    var allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = allLabel;
+    select.appendChild(allOption);
+    options.forEach(function (opt) {
+      var el = document.createElement('option');
+      el.value = opt.value;
+      el.textContent = opt.label;
+      select.appendChild(el);
+    });
+    if (current) select.value = current;
+  }
+
+  function populateLocationSelect(select) {
+    populateSelect(select, 'All Locations', window.AvanyaTaxonomy.getLocations().map(function (l) {
+      return { value: l.slug, label: l.name };
+    }));
+  }
+
+  function populatePropertyTypeSelect(select, verticalScope) {
+    populateSelect(select, 'All Types', window.AvanyaTaxonomy.getPropertyTypes({ verticalScope: verticalScope }).map(function (t) {
+      return { value: t.name, label: t.name };
+    }));
+  }
+
   /* ---------------- Tourism page ---------------- */
   function initTourism() {
     var grid = qs('#listing-grid');
@@ -32,9 +68,12 @@
     var searchInput = qs('#filter-search');
     var experienceChips = qsa('.experience-chip');
     var resetBtn = qs('#filter-reset');
-    if (!grid) return;
+    if (!grid || document.body.dataset.page !== 'tourism') return;
 
     var data = window.AvanyaData.TOURISM_LISTINGS;
+
+    populateLocationSelect(locationSelect);
+    populatePropertyTypeSelect(typeSelect, 'tourism');
 
     function state() {
       var activeExperiences = experienceChips.filter(function (c) { return c.getAttribute('aria-pressed') === 'true'; })
@@ -123,9 +162,12 @@
     var minPriceInput = qs('#filter-min-price');
     var maxPriceInput = qs('#filter-max-price');
     var resetBtn = qs('#filter-reset');
-    if (!grid) return;
+    if (!grid || document.body.dataset.page !== 'real-estate') return;
 
     var data = window.AvanyaData.REAL_ESTATE_LISTINGS;
+
+    populateLocationSelect(locationSelect);
+    populatePropertyTypeSelect(typeSelect, 'real_estate');
 
     function state() {
       return {

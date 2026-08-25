@@ -2,27 +2,27 @@
    Pattern: everything attached to `window.AvanyaData` (no ES modules) so every
    page can load this with a plain <script> tag, including when opened via file://. */
 
-(function () {
-  var LOCATIONS = [
-    { slug: 'darjeeling', name: 'Darjeeling' },
-    { slug: 'kalimpong', name: 'Kalimpong' },
-    { slug: 'kurseong', name: 'Kurseong' },
-    { slug: 'mirik', name: 'Mirik' },
-    { slug: 'dooars', name: 'Dooars' },
-    { slug: 'lava', name: 'Lava' },
-    { slug: 'kaffer', name: 'Kaffer' }
-  ];
+(function (root) {
+  /* Phase 2 (Core Taxonomy): Locations, Experience tags, and Property Types are no
+     longer defined here — they live in js/taxonomy.js, the single canonical source,
+     loaded before this file on every page. This file derives its LOCATIONS/
+     EXPERIENCE_TAGS/TOURISM_TYPES/REAL_ESTATE_TYPES from it below, purely for
+     backward-compatible shape (listings.js and property-detail.js already read
+     data.getLocationName()/data.getExperienceTagName() and expect these arrays to
+     exist on window.AvanyaData) — there is exactly one place taxonomy data is
+     actually authored now, not three. */
+  var taxonomy = root.AvanyaTaxonomy;
 
-  var EXPERIENCE_TAGS = [
-    { slug: 'mountain-views', name: 'Mountain Views' },
-    { slug: 'tea-garden-stays', name: 'Tea Garden Stays' },
-    { slug: 'river-front', name: 'River Front' },
-    { slug: 'wildlife-forest', name: 'Wildlife & Forest' },
-    { slug: 'heritage-colonial', name: 'Heritage & Colonial' }
-  ];
+  var LOCATIONS = taxonomy.getLocations().map(function (l) {
+    return { slug: l.slug, name: l.name };
+  });
 
-  var TOURISM_TYPES = ['Homestay', 'Resort', 'Heritage Bungalow', 'Tea Bungalow', 'Farm Stay', 'Hotel'];
-  var REAL_ESTATE_TYPES = ['Land', 'Homestay', 'Resort', 'Heritage Bungalow', 'Tea Bungalow', 'Hotel', 'Flat', 'House'];
+  var EXPERIENCE_TAGS = taxonomy.getExperiences().map(function (e) {
+    return { slug: e.slug, name: e.name };
+  });
+
+  var TOURISM_TYPES = taxonomy.getPropertyTypes({ verticalScope: 'tourism' }).map(function (t) { return t.name; });
+  var REAL_ESTATE_TYPES = taxonomy.getPropertyTypes({ verticalScope: 'real_estate' }).map(function (t) { return t.name; });
 
   var TOURISM_LISTINGS = [
     {
@@ -450,7 +450,7 @@
     return ALL_LISTINGS.filter(function (item) { return item.slug === slug; })[0] || null;
   }
 
-  window.AvanyaData = {
+  root.AvanyaData = {
     LOCATIONS: LOCATIONS,
     EXPERIENCE_TAGS: EXPERIENCE_TAGS,
     TOURISM_TYPES: TOURISM_TYPES,
@@ -462,4 +462,4 @@
     getExperienceTagName: getExperienceTagName,
     findBySlug: findBySlug
   };
-})();
+})(typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : this));
