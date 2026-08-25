@@ -81,6 +81,39 @@ There is no server-side includes mechanism in a pure static site, so the shared 
 
 **Update (Phase 3):** `sitemap.xml` is no longer hand-written — `scripts/generate-sitemap.js` regenerates it from `js/data.js`. **Update (Phase 5):** the per-listing entries now point at each listing's real static file (`/property/<slug>.html`) rather than a `?slug=` query string on one shared page — see the Phase 5 section below for why that distinction turned out to matter far more than just tidiness (31 URLs total as of this commit: 7 static pages + 24 listings). Run `node scripts/generate-sitemap.js` after adding, removing, or unpublishing a listing, and commit the regenerated file.
 
+## Roadmap note: Phase 9 (Launch Readiness) — go/no-go verdict: **NO-GO**, three concrete blockers
+
+Phase 9 is verification only — no new code, per its own scope. Spot-checked (not re-run from scratch) against every prior phase's Definition of Done: all 68 tests across 5 suites still pass, zero regressions since Phase 7; a fresh homepage load throws no console errors. The BRD's Go-Live Checklist, gone through line by line:
+
+**Backend/Admin items (secure RBAC login, listing CRUD, image management, tag management, enquiry-status tracking) — N/A**, unchanged from Phases 1/6: no admin panel exists in this project by deliberate design, so these have no live status to check.
+
+**Marketing & Technical items:**
+
+| Item | Status |
+|---|---|
+| SEO metadata / structured data | ✅ Done (Phase 5) — per-page meta, JSON-LD, sitemap, `llms.txt`, AI-crawler `robots.txt` policy |
+| Mobile responsiveness | ✅ Done (Phase 5/7) — 40-check cross-device sweep, zero failures |
+| Basic accessibility | ✅ Done (Phase 7) — 100/100 Lighthouse/axe-core on 3 audited pages |
+| Scalable architecture | ✅ Inherent — static site on a CDN (Vercel/Netlify) scales without configuration |
+| HTTPS | ⚠️ Not verified — Vercel provisions TLS automatically on both its default domain and any custom domain, but I have no live production URL to check against from this environment |
+| GA4 / Search Console / Meta Pixel | ❌ **Blocker** — `js/analytics.js` is wired and unit-tested, but ships with empty IDs; nothing fires until real IDs are supplied and verified against live dashboards (a launch prerequisite stated in Phase 7, still open) |
+| Spam-protected forms | ⚠️ Partial — consent checkbox + client-side validation are real; Formspree's own spam filtering/reCAPTCHA is available but not confirmed enabled (requires the business's Formspree dashboard) |
+| Image optimisation | ⚠️ N/A as scoped — all imagery is generated inline SVG, not photographs; real property photography (whenever supplied) will need its own optimisation pass, out of this build's scope |
+| Regular backups | ⚠️ Different mechanism, same intent — there's no database to schedule backups for; git history *is* this project's content backup, and every commit is push+recoverable |
+
+**DNS cutover / TLS on the production domain — cannot be verified from this environment.** I don't have the live Vercel URL or a connected custom domain to check `curl -I` against. If you share it, I'll verify HTTPS and redirect behaviour directly.
+
+**Content audit — the single biggest go/no-go blocker.** All 7 Locations, 5 Experiences, and 24 listings are still the synthetic placeholder data seeded in Phase 0 (explicitly documented as illustrative throughout this README). BRD §21's rule against non-genuine content means **launch cannot proceed with this data as-is** — every listing's name, description, price, and photography needs to be replaced with real Avanya inventory before this goes live to real visitors.
+
+### Recorded decision: **NO-GO**
+
+Three concrete, actionable blockers, not vague concerns:
+1. **Replace all synthetic listing content** in `js/data.js` with real inventory, then re-run `node scripts/generate-property-pages.js`, `node scripts/generate-sitemap.js`, and `node scripts/generate-llms-txt.js`.
+2. **Replace the 38 files' worth of placeholder values** (WhatsApp/phone/email, Formspree form ID, GTM/Meta Pixel IDs) — every one is marked `<!-- TODO -->` or documented in the placeholder table above; none require code changes, only real values.
+3. **Enable Formspree's spam protection** and **set up a free uptime monitor** (Phase 8's note) against the live domain.
+
+Everything code-side — every phase's actual implementation, every test, every verified behaviour — is real and launch-ready. What's blocking is exclusively real-world business inputs this codebase cannot supply itself, exactly the kind of gap this phase exists to surface rather than paper over.
+
 ## Roadmap note: Phase 8 (Hardening & Infrastructure) — deliberately not built
 
 Phase 8 is, in full, AWS production infrastructure: Terraform-provisioned VPC/ECS Fargate/RDS PostgreSQL Multi-AZ, an OIDC-based CI/CD pipeline deploying to it, CloudWatch logging/alerting, an RDS backup-restore drill, and an AWS WAF rate-based rule. Every exit criterion assumes a real AWS account, a real database, and real compute to hardened — none of which exist in this project, same category as Phase 1 (Auth/RBAC) and Phase 6 (Admin Panel): a zero-database, zero-backend static site has no server to harden, no database to back up, and no VPC to secure.
