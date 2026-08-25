@@ -3,17 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page Not Found | Avanya</title>
-<meta name="description" content="The page you're looking for doesn't exist. Explore Avanya's Tourism and Real Estate listings across North Bengal instead.">
-<link rel="canonical" href="https://www.avanyatourism.example/404.html">
-<meta name="robots" content="noindex">
+<title>Search Avanya | North Bengal Discovery Platform</title>
+<meta name="description" content="Search Avanya's Tourism and Real Estate listings, locations, and experiences across North Bengal.">
+<link rel="canonical" href="https://www.avanyatourism.example/search.html">
+<meta property="og:title" content="Search Avanya">
+<meta property="og:description" content="Search Tourism and Real Estate listings, locations, and experiences across North Bengal.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/og-image-placeholder.svg">
+<meta property="og:url" content="https://www.avanyatourism.example/search.html">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-page="search">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <header class="site-header">
@@ -31,10 +36,11 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <a class="icon-link desktop-only" href="search.html" aria-label="Search Avanya">
+        <a class="icon-link desktop-only" href="search.html" aria-label="Search Avanya" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         </a>
-        <a class="icon-link desktop-only" href="https://wa.me/919999999999" aria-label="Chat with Avanya on WhatsApp">
+        <!-- TODO: replace with real Avanya WhatsApp number before launch -->
+        <a class="icon-link desktop-only" href="https://wa.me/919999999999?text=Hi%20Avanya%2C%20I%27m%20interested%20in%20a%20North%20Bengal%20stay." aria-label="Chat with Avanya on WhatsApp">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.6-4.7A8 8 0 1 1 8.6 20L3 21Z"/></svg>
         </a>
         <a class="btn btn-primary btn-sm" href="contact.html">Enquire Now</a>
@@ -50,6 +56,7 @@
     <a href="real-estate.html">Real Estate</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="search.html" aria-current="page">Search</a>
     <div class="nav-cta-row">
       <a class="btn btn-outline btn-sm btn-block" href="tel:+919999999999">Call</a>
       <a class="btn btn-primary btn-sm btn-block" href="https://wa.me/919999999999">WhatsApp</a>
@@ -58,15 +65,45 @@
 </header>
 
 <main id="main-content">
-  <section class="section notfound-hero">
+  <section class="page-hero">
     <div class="container">
-      <span class="code">404</span>
-      <h1>We couldn't find that page</h1>
-      <p style="max-width: 48ch; margin: var(--sp-4) auto 0;">The page or listing you're looking for may have moved, or the link may be out of date. Here are a few places to pick back up.</p>
-      <div class="notfound-links">
-        <a class="btn btn-primary" href="tourism.html">Explore Tourism</a>
-        <a class="btn btn-outline" href="real-estate.html">Explore Real Estate</a>
-        <a class="btn btn-ghost" href="search.html">Search Avanya</a>
+      <p class="breadcrumb"><a href="index.html">Home</a> / Search</p>
+      <h1>Search Avanya</h1>
+      <p>Find Tourism stays, Real Estate listings, locations, and experiences across North Bengal — all in one search.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <form class="filter-bar" id="search-form" role="search" aria-label="Search Avanya" onsubmit="return false;">
+        <div class="filter-field search-field">
+          <label for="search-q">Search</label>
+          <input type="search" id="search-q" placeholder="Try “Dooars”, “tea garden”, “Land”…" autofocus>
+        </div>
+        <div class="filter-field">
+          <label for="search-module">Show</label>
+          <select id="search-module">
+            <option value="">All (Tourism + Real Estate)</option>
+            <option value="tourism">Tourism only</option>
+            <option value="real_estate">Real Estate only</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="results-meta">
+        <span id="search-results-count">Start typing to search</span>
+      </div>
+
+      <div class="listing-grid" id="search-results" aria-live="polite"></div>
+
+      <div class="empty-state" id="search-empty-state" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <h3>No matches found</h3>
+        <p>Try a different keyword, or browse everything directly.</p>
+        <div class="notfound-links" style="margin-top: var(--sp-4);">
+          <a class="btn btn-outline btn-sm" href="tourism.html">Explore Tourism</a>
+          <a class="btn btn-outline btn-sm" href="real-estate.html">Explore Real Estate</a>
+        </div>
       </div>
     </div>
   </section>
@@ -129,6 +166,12 @@
   </ul>
 </div>
 
+<script src="js/taxonomy.js"></script>
+<script src="js/listing-rules.js"></script>
+<script src="js/data.js"></script>
+<script src="js/listings.js"></script>
+<script src="js/search.js"></script>
+<script src="js/search-page.js"></script>
 <script src="js/nav.js"></script>
 </body>
 </html>

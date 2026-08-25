@@ -4,7 +4,7 @@ A static, dependency-free website for Avanya: a two-vertical discovery platform 
 
 ## What this is
 
-- Multi-page static site: `index.html`, `tourism.html`, `real-estate.html`, `property.html`, `about.html`, `contact.html`, `404.html`.
+- Multi-page static site: `index.html`, `tourism.html`, `real-estate.html`, `property.html`, `search.html`, `about.html`, `contact.html`, `404.html`.
 - Shared design tokens and components in `css/` (`variables.css`, `base.css`, `components.css`, `styles.css`).
 - All interactivity — filtering, property detail rendering, mobile nav, form validation — is vanilla JS in `js/`, with a single synthetic data file (`js/data.js`) driving both listing pages and the detail page.
 - All imagery is self-contained: inline SVG placeholders (gradients + simple line-art motifs) generated per listing based on a `placeholderTheme` field. Nothing depends on an external image host or a live internet connection to render correctly.
@@ -77,7 +77,33 @@ These are marked with `<!-- TODO -->` comments directly in the HTML/JS wherever 
 
 There is no server-side includes mechanism in a pure static site, so the shared header, footer, mobile nav, and sticky bar are repeated by careful copy-paste across all 7 HTML pages rather than being defined once. Every internal link and contact placeholder was kept consistent across pages by hand at the time of writing. If this site grows past ~10–15 pages, it would be worth introducing either a static-site generator (e.g. Eleventy) or a tiny partial-include build step — deliberately out of scope for now, per the brief's "no build step" requirement.
 
-Similarly, `sitemap.xml` lists `property.html` once as a physical page rather than enumerating each `?slug=` value as a separate URL, since those are client-side query parameters on one file, not distinct crawlable URLs under this architecture. A future move to per-listing static pages (via a build step) would let each slug get its own sitemap entry and improve individual-listing SEO.
+**Update (Phase 3):** `sitemap.xml` is no longer hand-written and no longer lists `property.html` just once — `scripts/generate-sitemap.js` now regenerates it from `js/data.js`, with a distinct `<url>` entry per published listing's `?slug=` URL (30 URLs total as of this commit: 6 static pages + 24 listings). Run `node scripts/generate-sitemap.js` after adding, removing, or unpublishing a listing, and commit the regenerated file. A future move to per-listing static pages (via a build step) would still improve on this — each listing's URL is a query string, not a distinct physical file, which some crawlers weight differently than a real path — but this closes most of the practical gap without introducing a build step.
+
+## Roadmap note: Phase 3 (Listings) — the security-critical boundary, and what "no backend" really means for it
+
+Phase 3 specifies Tourism/Real Estate Properties (public search/filter/detail + admin CRUD), a Media module (S3 presign/register, 10-image cap), related listings, global search, and an SEO module (sitemap/robots/redirects). Re-scoped:
+
+**The single highest-priority security dependency, taken seriously.** The roadmap flags the public/internal DTO split on Real Estate listings (Revenue/Lease-Income, Ownership/Seller Reference must stay admin-only) as the most important thing in the entire document set. In a real backend, that's enforced by a `PublicRealEstateListingDto` that structurally excludes those fields. **A static site has no server, so there is no "admin can see it, public can't" tier possible at all** — everything in `js/data.js` ships to every visitor, forever, visible via view-source. The only correct equivalent is stricter than the original: **those fields must never exist in this dataset, period.** `tests/listings.test.js` enforces this permanently with a named test checking every listing against a denylist of forbidden field names (`internalAttributes`, `revenueOrLeaseIncome`, `ownershipSellerReference`, etc.) — exactly the kind of test the roadmap says "should stay in the suite permanently, not be treated as a one-time verification."
+
+**A real correctness bug found and fixed while implementing this phase.** The related-listings ("You May Also Like") logic that shipped in Phase 0 used OR (same location *or* shared experience tag) — but the spec documents AND (same location *and* at least one shared tag). Moved the algorithm into `js/listing-rules.js` and fixed it to match the spec exactly, with a test proving the distinction matters: `kurseong-colonial-tea-bungalow`'s only same-location neighbor shares no experience tag, so under the correct AND logic its related panel is legitimately empty — under the old OR logic it would have wrongly shown a mismatched result.
+
+**Publish-state visibility, built for real.** Every listing now carries a `status: 'published'` field (`js/listing-rules.js`'s `isPubliclyVisible()`/`getPublishedListings()`). `filters.js` and `search.js` both filter through it before anything reaches the UI — a draft or archived listing (none exist in the current 24, but the mechanism is real and tested with synthetic draft/archived items in `tests/listings.test.js`) can never appear publicly.
+
+**The 10-image cap**, translated honestly: there's no upload flow to enforce it against (no admin panel), so `getGalleryImages()` is a hard ceiling instead — it physically cannot return more than 10 images regardless of what a listing's data claims, tested directly (`tests/listings.test.js`) against a listing that requests 15.
+
+**Global search — genuinely new, not previously built.** `js/search.js` + `search.html` implement the `GET /search` contract's shape (`?q=&module=`, mixed `resultType` results across locations/experiences/tourism/real-estate) as a plain function instead of an endpoint. Found and fixed a real gap while testing it: the first version only matched a listing's own name/description, missing "Dooars" searches for listings whose copy never uses that word — FR-80 explicitly requires matching on location too. Wired into the header nav (search icon, all 8 pages) and 404.html's recovery link, which previously pointed at `contact.html` under a misleading "Search / Contact Us" label with no actual search behind it.
+
+**Redirects** (`js/redirects.js`, `GET /redirects/resolve`'s equivalent): an empty, ready-to-use old-slug → new-slug map, checked by `property-detail.js` before falling back to 404 — so a future slug rename doesn't silently break existing links. Admin management → hand-editing the array, same pattern as taxonomy.js.
+
+**Sitemap, regenerated for real.** `scripts/generate-sitemap.js` (run with `node scripts/generate-sitemap.js` after any listing changes) now produces a genuine per-listing sitemap — all 24 published properties get their own `?slug=` URL entry, closing a limitation Phase 0 had explicitly flagged. Filtered listing-page views and Location/Experience taxonomy pages are deliberately still excluded, matching the project's own canonical-URL rule (a filtered view should canonicalize to the unfiltered page, not be separately indexed) and the fact that no dedicated Location/Experience detail pages exist.
+
+**robots.txt's "environment-aware" requirement doesn't apply.** The real spec calls for a disallow-all robots.txt in non-production environments. This project has exactly one deployment target (a single static push to Vercel/Netlify, no separate staging build), so there is no environment to be aware of — `robots.txt` is authored directly for production and left as-is.
+
+**Media/S3 presign-register doesn't apply.** There is no upload flow anywhere in this project (no admin panel to upload through) — every image is a generated inline-SVG placeholder. The 10-image cap above is the one piece of that module's intent that still means something here.
+
+**Per-entity SEO**, made real rather than assumed: `property-detail.js` now sets a distinct canonical URL and Open Graph tags per listing at render time (previously every listing shared one generic canonical tag on `property.html` — a real duplicate-content problem, now fixed).
+
+Run the Phase 3 test suites with `node tests/listings.test.js` and `node tests/search.test.js` (42 tests total across all three phases' suites, all passing as of this commit). As with Phase 2, this phase was verified against a live local server (not just by tracing logic by hand) — that's what caught the search-matching gap above.
 
 ## Roadmap note: Phase 2 (Core Taxonomy) — implemented as static data, not an API
 

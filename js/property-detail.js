@@ -11,23 +11,6 @@
     return params.get('slug');
   }
 
-  function findRelated(item, all) {
-    if (item.module === 'tourism') {
-      return all.filter(function (other) {
-        if (other.slug === item.slug || other.module !== 'tourism') return false;
-        var sameLocation = other.location === item.location;
-        var sharedTag = other.experienceTags.some(function (t) { return item.experienceTags.indexOf(t) !== -1; });
-        return sameLocation || sharedTag;
-      }).slice(0, 3);
-    }
-    return all.filter(function (other) {
-      if (other.slug === item.slug || other.module !== 'real-estate') return false;
-      var sameType = other.propertyType === item.propertyType;
-      var sharedTxn = other.transactionType.some(function (t) { return item.transactionType.indexOf(t) !== -1; });
-      return sameType || sharedTxn;
-    }).slice(0, 3);
-  }
-
   function attributeGridHTML(item, data) {
     var attrs = [
       { label: 'Location', value: data.getLocationName(item.location) },
@@ -54,14 +37,37 @@
     var slug = getSlug();
     var item = slug ? data.findBySlug(slug) : null;
 
-    if (!item) {
-      window.location.href = '404.html';
+    /* A slug that resolves to a real record but isn't published must be just
+       as unreachable as one that doesn't exist at all (Phase 3 exit
+       criteria: draft/archived listings never appear publicly) — there is
+       no admin preview mode in a static site to distinguish "not public yet"
+       from "doesn't exist." If it's not found, check the redirect map before
+       giving up entirely (Phase 3's redirects/resolve equivalent). */
+    if (!item || !window.AvanyaListingRules.isPubliclyVisible(item)) {
+      var redirectTarget = window.AvanyaRedirects ? window.AvanyaRedirects.resolveRedirect(slug) : null;
+      window.location.href = redirectTarget || '404.html';
       return;
     }
 
     document.title = item.name + ' — ' + data.getLocationName(item.location) + ' | Avanya';
     var metaDesc = qs('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', item.description.slice(0, 155));
+
+    /* Per-entity SEO (API Design §6.7's PATCH .../seo, re-scoped): each
+       listing gets its own canonical URL and Open Graph tags set here at
+       render time, rather than the page-wide generic ones in property.html's
+       <head> — otherwise every listing would share one canonical URL, which
+       is exactly the duplicate-content problem canonical tags exist to
+       prevent. */
+    var pageUrl = 'https://www.avanyatourism.example/property.html?slug=' + encodeURIComponent(item.slug);
+    var canonicalEl = qs('link[rel="canonical"]');
+    if (canonicalEl) canonicalEl.setAttribute('href', pageUrl);
+    var ogTitle = qs('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', item.name + ' | Avanya');
+    var ogDesc = qs('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', item.description.slice(0, 200));
+    var ogUrl = qs('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', pageUrl);
 
     qs('#detail-breadcrumb-current').textContent = item.name;
     var backLink = qs('#detail-breadcrumb-back');
@@ -91,7 +97,7 @@
       return '<li>' + checkIconSVG() + '<span>' + escapeXml(h) + '</span></li>';
     }).join('');
 
-    var galleryImages = [item.placeholderTheme, item.placeholderTheme, item.placeholderTheme, item.placeholderTheme];
+    var galleryImages = window.AvanyaListingRules.getGalleryImages(item);
     var mainGallery = qs('#gallery-main');
     var thumbsEl = qs('#gallery-thumbs');
 
@@ -130,7 +136,7 @@
     qs('#enquire-module-input').value = item.module;
     qs('#enquiry-context-name').textContent = item.name;
 
-    var related = findRelated(item, data.ALL_LISTINGS);
+    var related = window.AvanyaListingRules.findRelatedListings(item, data.ALL_LISTINGS);
     var relatedSection = qs('#related-panel');
     var relatedGrid = qs('#related-grid');
     if (related.length) {

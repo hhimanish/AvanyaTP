@@ -28,6 +28,7 @@
     {
       slug: 'darjeeling-heritage-bungalow-retreat',
       module: 'tourism',
+      status: 'published',
       name: 'Windermere Ridge Heritage Bungalow',
       location: 'darjeeling',
       propertyType: 'Heritage Bungalow',
@@ -44,6 +45,7 @@
     {
       slug: 'darjeeling-tea-garden-homestay',
       module: 'tourism',
+      status: 'published',
       name: 'Selim Hill Tea Garden Homestay',
       location: 'darjeeling',
       propertyType: 'Homestay',
@@ -60,6 +62,7 @@
     {
       slug: 'kalimpong-hillside-resort',
       module: 'tourism',
+      status: 'published',
       name: 'Deolo Hillside Resort',
       location: 'kalimpong',
       propertyType: 'Resort',
@@ -76,6 +79,7 @@
     {
       slug: 'kalimpong-orchid-farm-stay',
       module: 'tourism',
+      status: 'published',
       name: 'Relli Valley Orchid Farm Stay',
       location: 'kalimpong',
       propertyType: 'Farm Stay',
@@ -92,6 +96,7 @@
     {
       slug: 'kurseong-colonial-tea-bungalow',
       module: 'tourism',
+      status: 'published',
       name: 'Makaibari Colonial Tea Bungalow',
       location: 'kurseong',
       propertyType: 'Tea Bungalow',
@@ -108,6 +113,7 @@
     {
       slug: 'kurseong-misty-ridge-homestay',
       module: 'tourism',
+      status: 'published',
       name: 'Dow Hill Misty Ridge Homestay',
       location: 'kurseong',
       propertyType: 'Homestay',
@@ -124,6 +130,7 @@
     {
       slug: 'mirik-lakeview-hotel',
       module: 'tourism',
+      status: 'published',
       name: 'Sumendu Lakeview Hotel',
       location: 'mirik',
       propertyType: 'Hotel',
@@ -140,6 +147,7 @@
     {
       slug: 'mirik-pinewood-homestay',
       module: 'tourism',
+      status: 'published',
       name: 'Pinewood Ridge Homestay',
       location: 'mirik',
       propertyType: 'Homestay',
@@ -156,6 +164,7 @@
     {
       slug: 'dooars-riverside-forest-resort',
       module: 'tourism',
+      status: 'published',
       name: 'Murti Riverside Forest Resort',
       location: 'dooars',
       propertyType: 'Resort',
@@ -172,6 +181,7 @@
     {
       slug: 'dooars-jungle-camp-homestay',
       module: 'tourism',
+      status: 'published',
       name: 'Chapramari Jungle Camp Homestay',
       location: 'dooars',
       propertyType: 'Homestay',
@@ -188,6 +198,7 @@
     {
       slug: 'lava-monastery-view-homestay',
       module: 'tourism',
+      status: 'published',
       name: 'Lava Monastery View Homestay',
       location: 'lava',
       propertyType: 'Homestay',
@@ -204,6 +215,7 @@
     {
       slug: 'lava-cloud-forest-resort',
       module: 'tourism',
+      status: 'published',
       name: 'Neora Cloud Forest Resort',
       location: 'lava',
       propertyType: 'Resort',
@@ -220,6 +232,7 @@
     {
       slug: 'kaffer-birding-farm-stay',
       module: 'tourism',
+      status: 'published',
       name: 'Kaffer Birding Farm Stay',
       location: 'kaffer',
       propertyType: 'Farm Stay',
@@ -236,6 +249,7 @@
     {
       slug: 'kaffer-hilltop-heritage-bungalow',
       module: 'tourism',
+      status: 'published',
       name: 'Kaffer Hilltop Heritage Bungalow',
       location: 'kaffer',
       propertyType: 'Heritage Bungalow',
@@ -255,6 +269,7 @@
     {
       slug: 'darjeeling-tea-estate-land-parcel',
       module: 'real-estate',
+      status: 'published',
       name: 'Ging Valley Tea Estate Land Parcel',
       location: 'darjeeling',
       propertyType: 'Land',
@@ -273,6 +288,7 @@
     {
       slug: 'darjeeling-colonial-bungalow-for-sale',
       module: 'real-estate',
+      status: 'published',
       name: 'Jalapahar Colonial Bungalow',
       location: 'darjeeling',
       propertyType: 'Heritage Bungalow',
@@ -291,6 +307,7 @@
     {
       slug: 'kalimpong-hillside-plot',
       module: 'real-estate',
+      status: 'published',
       name: 'Durpin Hillside Residential Plot',
       location: 'kalimpong',
       propertyType: 'Land',
@@ -309,6 +326,7 @@
     {
       slug: 'kalimpong-family-house',
       module: 'real-estate',
+      status: 'published',
       name: 'Deolo Road Family House',
       location: 'kalimpong',
       propertyType: 'House',
@@ -327,6 +345,7 @@
     {
       slug: 'kurseong-tea-bungalow-lease',
       module: 'real-estate',
+      status: 'published',
       name: 'Ambootia Tea Bungalow, Long Lease',
       location: 'kurseong',
       propertyType: 'Tea Bungalow',
@@ -345,6 +364,7 @@
     {
       slug: 'mirik-lakeview-flat',
       module: 'real-estate',
+      status: 'published',
       name: 'Sumendu View Residency Flat',
       location: 'mirik',
       propertyType: 'Flat',
@@ -363,6 +383,7 @@
     {
       slug: 'dooars-riverside-resort-property',
       module: 'real-estate',
+      status: 'published',
       name: 'Murti Riverside Resort Property',
       location: 'dooars',
       propertyType: 'Resort',
@@ -381,6 +402,7 @@
     {
       slug: 'dooars-forest-edge-land',
       module: 'real-estate',
+      status: 'published',
       name: 'Chalsa Forest-Edge Land',
       location: 'dooars',
       propertyType: 'Land',
@@ -399,6 +421,7 @@
     {
       slug: 'lava-hill-homestay-property',
       module: 'real-estate',
+      status: 'published',
       name: 'Lava Hillside Homestay Property',
       location: 'lava',
       propertyType: 'Homestay',
@@ -417,6 +440,7 @@
     {
       slug: 'kaffer-boutique-hotel-lease',
       module: 'real-estate',
+      status: 'published',
       name: 'Kaffer Boutique Hotel, Operator Lease',
       location: 'kaffer',
       propertyType: 'Hotel',

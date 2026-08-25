@@ -101,7 +101,7 @@
     }
 
     function filterData(s) {
-      return data.filter(function (item) {
+      return window.AvanyaListingRules.getPublishedListings(data).filter(function (item) {
         if (s.location && item.location !== s.location) return false;
         if (s.type && item.propertyType !== s.type) return false;
         if (s.experience.length && !s.experience.every(function (tag) { return item.experienceTags.indexOf(tag) !== -1; })) return false;
@@ -191,7 +191,7 @@
     }
 
     function filterData(s) {
-      return data.filter(function (item) {
+      return window.AvanyaListingRules.getPublishedListings(data).filter(function (item) {
         if (s.location && item.location !== s.location) return false;
         if (s.type && item.propertyType !== s.type) return false;
         if (s.txn && item.transactionType.indexOf(s.txn) === -1) return false;
