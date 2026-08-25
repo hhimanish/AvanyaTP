@@ -107,26 +107,26 @@
   white-space: nowrap;
 }
 
-/* Below ~480px, "Avanya Tourism" no longer fits on one line at the site's
-   default brand size, and would otherwise wrap and push past the header's
-   fixed height into the hero section below it. Shrink the brand (name and
-   tagline stay visible, stacked, same as desktop — just smaller) and claw
-   back the remaining room from the header's other side rather than hiding
-   the tagline. */
+/* Below ~480px, repeated real-device testing (360px, 375px, and actual
+   phone screenshots at what should have been comfortable widths) kept
+   finding "Avanya Tourism" + the tagline truncated even after several
+   rounds of shrinking the brand and the header's other controls — most
+   likely because Android's own accessibility text-size scaling inflates
+   rem-based font sizes without changing the reported viewport width, so a
+   fixed px budget calculated at one font scale doesn't hold at another.
+   Rather than keep shrinking text against a moving target, remove the
+   competition instead: the header's "Enquire Now" button is redundant
+   below this width anyway, since .sticky-bar (shown below 767px, see its
+   own rule further down) already surfaces Call/WhatsApp/Enquire at the
+   bottom of the screen. Hiding it frees enough width that the brand can
+   stay close to its full size and still comfortably fit, with real margin
+   against font-scale variance rather than a knife's-edge fit. */
 @media (max-width: 480px) {
-  .brand { font-size: 0.95rem; gap: var(--sp-1); align-items: center; }
-  .brand svg { width: 30px; height: 30px; }
-  .brand img { height: 30px; }
-  .brand .tagline { font-size: 0.55rem; }
-  /* "Avanya Tourism" was measured to overflow its available space by ~8px
-     at 360px width (one of the most common real Android viewport widths)
-     even after the brand itself shrank — the ellipsis safety net was
-     catching it, but silently truncating a real word is still a visible
-     defect, not a fix. Reclaim that margin from the header's other side
-     instead of shrinking the brand further. */
-  .site-header .nav-actions { gap: var(--sp-2); }
-  .site-header .nav-actions .btn { padding: 0.45rem 0.7rem; font-size: 0.7rem; }
-  .site-header .hamburger { width: 34px; height: 34px; }
+  .brand { font-size: 1.1rem; gap: var(--sp-2); align-items: center; }
+  .brand svg { width: 32px; height: 32px; }
+  .brand img { height: 32px; }
+  .brand .tagline { font-size: 0.6rem; }
+  .site-header .nav-actions .btn { display: none; }
 }
 
 .main-nav {
