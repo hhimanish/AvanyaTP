@@ -259,8 +259,8 @@ structuredDataJSON(item, locationName, canonicalUrl, ogImageUrl) + '\n' +
 '<header class="site-header">\n' +
 '  <div class="container">\n' +
 '    <a href="../index.html" class="brand">\n' +
-'      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1f4d3a"/><path d="M2 22 L10 10 L15 17 L20 8 L30 22 Z" fill="#c08a2e" opacity="0.9"/><path d="M0 25c3 0 3 3 6 3s3-3 6-3 3 3 6 3 3-3 6-3 3 3 6 3" stroke="#2e6e7e" stroke-width="2" fill="none" stroke-linecap="round"/></svg>\n' +
-'      <span>Avanya<span class="tagline">North Bengal Discovery</span></span>\n' +
+'      <img src="../assets/logo-icon.png" alt="" width="38" height="33">\n' +
+'      <span>Avanya Tourism<span class="tagline">North Bengal Discovery</span></span>\n' +
 '    </a>\n' +
 '    <nav class="main-nav" aria-label="Primary">\n' +
 '      <ul class="nav-links">\n' +
@@ -402,8 +402,8 @@ listings.placeholderSVG(galleryImages[0], item.name, { hideTitle: true, alt: ite
 '    <div class="footer-grid">\n' +
 '      <div class="footer-brand">\n' +
 '        <div class="brand">\n' +
-'          <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#c08a2e"/><path d="M2 22 L10 10 L15 17 L20 8 L30 22 Z" fill="#123328"/></svg>\n' +
-'          <span>Avanya</span>\n' +
+'          <img src="../assets/logo-icon.png" alt="" width="34" height="30">\n' +
+'          <span>Avanya Tourism</span>\n' +
 '        </div>\n' +
 '        <p>North Bengal’s digital discovery platform for tourism stays and real estate.</p>\n' +
 '        <div class="quick-actions">\n' +
