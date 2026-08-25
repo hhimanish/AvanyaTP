@@ -84,10 +84,18 @@
   font-weight: 700;
   color: var(--color-primary-dark);
   white-space: nowrap;
+  min-width: 0;
+  flex-shrink: 1;
 }
 .brand svg { width: 34px; height: 34px; flex-shrink: 0; }
 .brand img { height: 38px; width: auto; flex-shrink: 0; }
 .footer-brand .brand img { height: 34px; width: auto; }
+/* Safety net: if brand text still doesn't fit its available space at some
+   combination of viewport width and OS-level font-size scaling the max-width:
+   480px rule below wasn't sized for, truncate with an ellipsis instead of
+   silently overlapping the nav buttons next to it. */
+.brand > span:first-of-type { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; min-width: 0; vertical-align: middle; }
+.site-header .main-nav { flex-shrink: 0; }
 .brand .tagline {
   display: block;
   font-family: var(--font-body);
