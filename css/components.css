@@ -72,7 +72,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--header-height);
+  min-height: var(--header-height);
 }
 
 .brand {
@@ -83,9 +83,10 @@
   font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--color-primary-dark);
+  white-space: nowrap;
 }
-.brand svg { width: 34px; height: 34px; }
-.brand img { height: 38px; width: auto; }
+.brand svg { width: 34px; height: 34px; flex-shrink: 0; }
+.brand img { height: 38px; width: auto; flex-shrink: 0; }
 .footer-brand .brand img { height: 34px; width: auto; }
 .brand .tagline {
   display: block;
@@ -95,6 +96,19 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-soft);
+  white-space: nowrap;
+}
+
+/* Below ~480px, "Avanya Tourism" + the North Bengal Discovery tagline no
+   longer fit on one line each even at the site's smallest brand size, and
+   would otherwise wrap to 4 lines and push past the fixed header height
+   into the hero section below it. Drop to a single-line "Avanya" mark and
+   hide the decorative tagline rather than let the header grow tall. */
+@media (max-width: 480px) {
+  .brand { font-size: 1.05rem; gap: var(--sp-2); }
+  .brand svg { width: 28px; height: 28px; }
+  .brand img { height: 30px; }
+  .brand .tagline { display: none; }
 }
 
 .main-nav {
@@ -700,6 +714,7 @@ body.nav-open .mobile-nav { display: flex; }
 .footer-grid ul { display: flex; flex-direction: column; gap: var(--sp-2); }
 .footer-grid a { color: rgba(255,255,255,0.75); font-size: var(--fs-sm); }
 .footer-grid a:hover { color: var(--color-accent); }
+.footer-brand .brand { color: var(--color-white); }
 .footer-brand p { color: rgba(255,255,255,0.7); margin: var(--sp-3) 0 var(--sp-4); max-width: 40ch; }
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,0.15);
