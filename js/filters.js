@@ -28,7 +28,7 @@
      source of truth from ever silently drifting apart. The existing static
      <option> markup stays in the HTML as a no-JS fallback (progressive
      enhancement), and is fully replaced once this runs. `allLabel` is the
-     "All Locations" / "All Types" placeholder option, preserved at the top. */
+     "All Zones" / "All Types" placeholder option, preserved at the top. */
   function populateSelect(select, allLabel, options) {
     if (!select) return;
     var current = select.value;
@@ -47,7 +47,7 @@
   }
 
   function populateLocationSelect(select) {
-    populateSelect(select, 'All Locations', window.AvanyaTaxonomy.getLocations().map(function (l) {
+    populateSelect(select, 'All Zones', window.AvanyaTaxonomy.getLocations().map(function (l) {
       return { value: l.slug, label: l.name };
     }));
   }

@@ -9,7 +9,7 @@
   function escapeXml(s) { return window.AvanyaListings.escapeXml(s); }
 
   var RESULT_TYPE_LABEL = {
-    location: 'Location',
+    location: 'Zone',
     experience: 'Experience',
     tourism_property: 'Tourism Stay',
     real_estate_property: 'Real Estate'

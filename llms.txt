@@ -4,17 +4,17 @@
 
 ## Core Pages
 
-- [Home](https://www.avanyatourism.example/index.html): Avanya's homepage — an overview of both discovery verticals and all seven North Bengal locations.
+- [Home](https://www.avanyatourism.example/index.html): Avanya's homepage — an overview of both discovery verticals and all seven North Bengal zones.
 - [Tourism](https://www.avanyatourism.example/tourism.html): Browse and filter all published Tourism stays (homestays, resorts, heritage bungalows, tea bungalows, farm stays, hotels) across North Bengal.
 - [Real Estate](https://www.avanyatourism.example/real-estate.html): Browse and filter all published Real Estate listings (land, homestays, resorts, bungalows, hotels, flats, houses) available to buy or lease across North Bengal.
-- [Search](https://www.avanyatourism.example/search.html): Free-text search across Tourism stays, Real Estate listings, locations, and experience tags.
+- [Search](https://www.avanyatourism.example/search.html): Free-text search across Tourism stays, Real Estate listings, zones, and experience tags.
 - [Plan a Custom Trip](https://www.avanyatourism.example/travel-plan.html): Request a hand-picked North Bengal itinerary by submitting travel dates, group size, and interests.
-- [About](https://www.avanyatourism.example/about.html): Avanya's story, mission, and the seven North Bengal locations it operates in.
+- [About](https://www.avanyatourism.example/about.html): Avanya's story, mission, and the seven North Bengal zones it operates in.
 - [Contact](https://www.avanyatourism.example/contact.html): Send Avanya a general enquiry, or reach the team directly by WhatsApp, phone, or email.
-- [North Bengal](https://www.avanyatourism.example/north-bengal.html): All seven North Bengal locations Avanya covers, each linking to its Tourism stays and Real Estate listings.
+- [North Bengal](https://www.avanyatourism.example/north-bengal.html): All seven North Bengal zones Avanya covers, each linking to its Tourism stays and Real Estate listings.
 - [Things to Do](https://www.avanyatourism.example/things-to-do.html): Browse North Bengal by experience — mountain views, tea-garden stays, river-front, wildlife/forest, heritage & colonial — each linking to matching Tourism stays.
 
-## Tourism by Location
+## Tourism by Zone
 
 - [Tourism in Darjeeling](https://www.avanyatourism.example/tourism.html?location=darjeeling): Tourism stays filtered to Darjeeling, North Bengal.
 - [Tourism in Kalimpong](https://www.avanyatourism.example/tourism.html?location=kalimpong): Tourism stays filtered to Kalimpong, North Bengal.

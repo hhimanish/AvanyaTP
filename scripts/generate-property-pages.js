@@ -59,7 +59,7 @@ function truncate(str, maxLen) {
    would only ever be a copy-paste mistake, not a data-source mismatch. */
 function attributeGridHTML(item) {
   var attrs = [
-    { label: 'Location', value: data.getLocationName(item.location) },
+    { label: 'Zone', value: data.getLocationName(item.location) },
     { label: 'Property Type', value: item.propertyType }
   ];
   if (item.module === 'tourism') {
