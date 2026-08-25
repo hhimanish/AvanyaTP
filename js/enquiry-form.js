@@ -1,6 +1,15 @@
 /* Client-side validation + Formspree submission via fetch(), no page reload.
    WhatsApp/Call/Email quick-action buttons are plain <a> tags elsewhere and are
-   NOT gated by this script — they work even if JS fails to load. */
+   NOT gated by this script — they work even if JS fails to load.
+
+   Phase 4 (Enquiry Engine): also assembles the enquiry payload via
+   js/enquiry-engine.js (module/enquiryType/leadId/listingSnapshot/UTM),
+   enforces consent with the spec's exact documented error message, shows the
+   generated lead reference to the visitor on success, and — the key risk
+   this phase's roadmap entry specifically calls out — never lets a failed
+   submission silently disappear: if the network call itself fails, the
+   visitor gets an immediate, pre-filled WhatsApp/email fallback instead of
+   just an apology. */
 
 (function () {
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,10 +48,37 @@
     return true;
   }
 
+  function collectFieldValues(form) {
+    var values = {};
+    qsa('input, textarea, select', form).forEach(function (f) {
+      if (!f.name) return;
+      values[f.name] = f.type === 'checkbox' ? f.checked : f.value;
+    });
+    return values;
+  }
+
+  function fallbackMessage(fields) {
+    var parts = ['Hi Avanya, my enquiry form submission didn\'t go through, so I\'m reaching out directly.'];
+    if (fields.name) parts.push('Name: ' + fields.name);
+    if (fields.message) parts.push('Message: ' + fields.message);
+    return parts.join(' ');
+  }
+
+  function showFallback(form, fields) {
+    var status = form.querySelector('.form-status');
+    var msg = fallbackMessage(fields);
+    var waHref = 'https://wa.me/919999999999?text=' + encodeURIComponent(msg);
+    var mailHref = 'mailto:enquiries@avanyatourism.example?subject=' + encodeURIComponent('Enquiry (form submission failed)') + '&body=' + encodeURIComponent(msg);
+    status.className = 'form-status show error';
+    status.innerHTML = 'We couldn\'t send your enquiry through the form right now — your message has NOT been lost, please reach us directly instead: ' +
+      '<a href="' + waHref + '" class="btn btn-primary btn-sm" style="margin: var(--sp-2) var(--sp-2) 0 0;">Continue on WhatsApp</a>' +
+      '<a href="' + mailHref + '" class="btn btn-outline btn-sm" style="margin: var(--sp-2) 0 0;">Continue by Email</a>';
+  }
+
   function initForm(form) {
     var status = form.querySelector('.form-status');
     var submitBtn = form.querySelector('button[type="submit"]');
-    var fields = qsa('input, textarea', form).filter(function (f) { return f.name; });
+    var fields = qsa('input, textarea', form).filter(function (f) { return f.name && f.type !== 'hidden'; });
 
     fields.forEach(function (field) {
       field.addEventListener('blur', function () { validateField(field); });
@@ -59,12 +95,45 @@
         return;
       }
 
+      var fieldValues = collectFieldValues(form);
+
+      /* Explicit consent enforcement via the enquiry engine, matching the
+         spec's documented 422 error exactly — this is a second, deliberate
+         check beyond the required-checkbox validation above, so consent is
+         never bypassable by a browser that mishandles the "required"
+         attribute, and so the error text a visitor sees is the one the API
+         Design document actually specifies, not an ad hoc message. */
+      var engine = window.AvanyaEnquiryEngine;
+      var consentCheck = engine.validateConsent({ consent: fieldValues.consent === true });
+      if (!consentCheck.valid) {
+        status.className = 'form-status show error';
+        status.textContent = consentCheck.errors[0].issue;
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending…';
       status.className = 'form-status show';
       status.textContent = '';
 
+      var propertySlug = fieldValues.propertySlug || null;
+      var listingItem = propertySlug && window.AvanyaData ? window.AvanyaData.findBySlug(propertySlug) : null;
+
+      var payload = engine.buildEnquiryPayload(fieldValues, {
+        listingItem: listingItem,
+        taxonomy: window.AvanyaTaxonomy,
+        search: window.location.search
+      });
+
       var formData = new FormData(form);
+      formData.set('leadId', payload.leadId);
+      formData.set('enquiryType', payload.enquiryType);
+      if (payload.listingSnapshot) {
+        formData.set('listingSnapshot', JSON.stringify(payload.listingSnapshot));
+      }
+      if (payload.utm_source) formData.set('utm_source', payload.utm_source);
+      if (payload.utm_medium) formData.set('utm_medium', payload.utm_medium);
+      if (payload.utm_campaign) formData.set('utm_campaign', payload.utm_campaign);
 
       fetch(form.action, {
         method: 'POST',
@@ -74,7 +143,7 @@
         .then(function (response) {
           if (response.ok) {
             status.className = 'form-status show success';
-            status.textContent = 'Thank you — your enquiry has been sent. Our team will reach out shortly.';
+            status.textContent = 'Thank you — your enquiry has been sent. Our team will reach out shortly. Your reference: ' + payload.leadId + ' (quote this if you follow up).';
             form.reset();
           } else {
             return response.json().then(function (data) {
@@ -83,8 +152,13 @@
           }
         })
         .catch(function () {
-          status.className = 'form-status show error';
-          status.textContent = 'Something went wrong sending your enquiry. Please try again, or reach us directly via WhatsApp, call, or email below.';
+          /* The key risk this phase's roadmap entry names: an async
+             notification path that fails silently. Formspree's own email
+             delivery is outside this site's control, but a failure of the
+             submission call itself must never just apologise and stop —
+             the visitor's message is still sitting in the form; give them
+             an immediate way to send it anyway rather than losing the lead. */
+          showFallback(form, fieldValues);
         })
         .finally(function () {
           submitBtn.disabled = false;

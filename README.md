@@ -4,7 +4,7 @@ A static, dependency-free website for Avanya: a two-vertical discovery platform 
 
 ## What this is
 
-- Multi-page static site: `index.html`, `tourism.html`, `real-estate.html`, `property.html`, `search.html`, `about.html`, `contact.html`, `404.html`.
+- Multi-page static site: `index.html`, `tourism.html`, `real-estate.html`, `property.html`, `search.html`, `travel-plan.html`, `about.html`, `contact.html`, `404.html`.
 - Shared design tokens and components in `css/` (`variables.css`, `base.css`, `components.css`, `styles.css`).
 - All interactivity — filtering, property detail rendering, mobile nav, form validation — is vanilla JS in `js/`, with a single synthetic data file (`js/data.js`) driving both listing pages and the detail page.
 - All imagery is self-contained: inline SVG placeholders (gradients + simple line-art motifs) generated per listing based on a `placeholderTheme` field. Nothing depends on an external image host or a live internet connection to render correctly.
@@ -50,7 +50,7 @@ These are marked with `<!-- TODO -->` comments directly in the HTML/JS wherever 
 | WhatsApp number | `919999999999` (used in `https://wa.me/919999999999` links) | Header, footer, mobile sticky bar, property action bar on every page; also built dynamically in `js/property-detail.js` |
 | Phone number | `+919999999999` (used in `tel:+919999999999` links) | Header mobile nav, footer, mobile sticky bar, property action bar, contact page |
 | Business email | `enquiries@avanyatourism.example` (used in `mailto:` links) | Footer (every page), contact page, property action bar |
-| Formspree form ID | `YOUR_FORM_ID` in `action="https://formspree.io/f/YOUR_FORM_ID"` | `contact.html`, `property.html` |
+| Formspree form ID | `YOUR_FORM_ID` in `action="https://formspree.io/f/YOUR_FORM_ID"` | `contact.html`, `property.html`, `travel-plan.html` |
 | Canonical/OG URLs | `https://www.avanyatourism.example/...` | `<link rel="canonical">` and `og:url` in every page's `<head>` |
 | All listing content | 24 synthetic listings (14 Tourism + 10 Real Estate) in `js/data.js` | Names, descriptions, highlights, and prices are illustrative, not real inventory |
 | Homepage testimonial quote | Clearly labelled as an illustrative, unverified placeholder quote | `index.html`, "why Avanya" quote block |
@@ -78,6 +78,28 @@ These are marked with `<!-- TODO -->` comments directly in the HTML/JS wherever 
 There is no server-side includes mechanism in a pure static site, so the shared header, footer, mobile nav, and sticky bar are repeated by careful copy-paste across all 7 HTML pages rather than being defined once. Every internal link and contact placeholder was kept consistent across pages by hand at the time of writing. If this site grows past ~10–15 pages, it would be worth introducing either a static-site generator (e.g. Eleventy) or a tiny partial-include build step — deliberately out of scope for now, per the brief's "no build step" requirement.
 
 **Update (Phase 3):** `sitemap.xml` is no longer hand-written and no longer lists `property.html` just once — `scripts/generate-sitemap.js` now regenerates it from `js/data.js`, with a distinct `<url>` entry per published listing's `?slug=` URL (30 URLs total as of this commit: 6 static pages + 24 listings). Run `node scripts/generate-sitemap.js` after adding, removing, or unpublishing a listing, and commit the regenerated file. A future move to per-listing static pages (via a build step) would still improve on this — each listing's URL is a query string, not a distinct physical file, which some crawlers weight differently than a real path — but this closes most of the practical gap without introducing a build step.
+
+## Roadmap note: Phase 4 (Enquiry Engine) — Formspree IS this project's backend
+
+Phase 4 specifies POST /enquiries, POST /travel-plans, an async SES notification worker, and a full admin lead-management API (list/detail/update/bulk-update/export/DPDP-erasure). Re-scoped honestly:
+
+**What this project's "enquiry engine" actually is.** There is no database and no server to persist a lead, so Formspree — already wired up since Phase 0 — genuinely *is* the equivalent of `POST /enquiries`: it receives the submission, stores it, and emails Avanya. Everything below is what Phase 4 adds on top of that plain form-to-email pipe to make it actually match the spec's real behaviour, not just its email-notification side effect.
+
+**`js/enquiry-engine.js`** (new, plain-function, fully unit-tested — `tests/enquiry-engine.test.js`, 19 tests) assembles what the real request body would carry: `module` (tourism/real_estate), `enquiryType` (stay/buy/lease/travel_plan/general — previously the form only ever sent a meaningless `general-enquiry` string, now fixed), a formatted `AVN-T-YYYYMMDD-###` / `AVN-R-YYYYMMDD-###` lead reference id, and a denormalised `listingSnapshot` (name/location/type) captured at submission time exactly like Database Design §4.4's `listing_snapshot` column. **Stated honestly**: the real spec's `lead_id` comes from a database sequence, guaranteeing uniqueness; this client-generated version uses a random 3-digit suffix since there's no shared counter to draw from — a real, correctly-formatted reference for the visitor to quote, not a guaranteed-unique identifier the way a real one is.
+
+**Consent enforcement, for real.** `validateConsent()` rejects anything other than `consent: true` with the exact error text API Design §7.4 documents ("Consent to the Privacy Policy is required to submit an enquiry."), as a deliberate second check behind the HTML `required` attribute — verified live in a browser by removing the `required` attribute and confirming the JS check still catches it (a browser that mishandled `required` would otherwise let an unconsented submission through).
+
+**The key risk this phase's roadmap entry names — an async notification path that fails silently — got a real fix, not just a test.** Formspree's actual email delivery is outside this site's control, but the submission call itself failing (network issue, Formspree outage, or literally the still-placeholder `YOUR_FORM_ID` before launch) previously just showed an apology and the visitor's message was gone. Now the `.catch()` path shows an immediate WhatsApp/email continuation, pre-filled with the visitor's name and message, so a failed submission never silently loses a lead. **Verified live**: submitted the contact form against the placeholder Formspree ID (which genuinely 404s), confirmed the fallback UI appeared with a correctly pre-filled `wa.me` link containing the visitor's actual message.
+
+**The Custom Travel Plan form — genuinely missing, now built.** `travel-plan.html` + `js/travel-plan.js` (BRD §16.3, API Design §5.4's stated "POST /travel-plans sets enquiryType server-side" exception): trip dates, group size, an Interests chip group rendered live from `js/taxonomy.js`'s Experience tags (never hand-duplicated), and a hardcoded (non-editable) `enquiryType=travel_plan` hidden field — the static equivalent of the server setting it, since the visitor has no field to override. Linked from `tourism.html`'s hero.
+
+**Real Estate enquiries now ask Buy or Lease when it's ambiguous.** A listing offered under only one transaction type sets `enquiryType` directly (verified live for both `buy`-only and `lease`-only listings); a listing offered under both shows a small select the visitor picks from, synced live into the hidden field the form submits (verified live: changing the select updates the hidden value immediately).
+
+**Admin lead management (GET/PATCH/bulk-update/export/DPDP-erasure) does not apply — same treatment as Phase 1.** There's no database to query or admin panel to build it into. The closest honest equivalent: Formspree's own dashboard already lets Avanya view, mark, and export every submission (satisfying FR-49's "no lead should be permanently trapped" in spirit), and deleting a submission there is the manual, human-operated equivalent of the DPDP right-to-erasure endpoint — exactly how a small team without a CRM would actually handle an erasure request in practice.
+
+**RBAC-scoped admin behaviour (Property Manager's `assignedTo=self` scoping, Content/Marketing Manager's read-only PATCH restriction) does not apply**, for the same reason Phase 1 doesn't: there is no admin panel, no roles, and no authenticated actor to scope anything to.
+
+Run `node tests/enquiry-engine.test.js` (19 tests, all passing) for the pure-logic layer. The DOM-coupled layer (`js/enquiry-form.js` itself — the actual submit handler, fetch call, and fallback UI) is deliberately **not** unit-tested under Node — it touches `document`/`fetch` directly and this project doesn't want a jsdom dependency just to fake that. It was instead verified against a live local server: consent bypass attempt, successful-path lead reference display, and the fetch-failure fallback UI were all exercised in an actual browser, which is what caught the "form only sent an approach-vocabulary-mismatched `module` value" issue described above in the first place.
 
 ## Roadmap note: Phase 3 (Listings) — the security-critical boundary, and what "no backend" really means for it
 

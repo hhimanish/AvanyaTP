@@ -78,7 +78,8 @@
         <!-- TODO: replace YOUR_FORM_ID with the real Formspree endpoint ID before launch -->
         <form class="enquiry-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
           <input type="hidden" name="propertySlug" value="">
-          <input type="hidden" name="module" value="general-enquiry">
+          <input type="hidden" name="module" value="">
+          <input type="hidden" name="enquiryType" value="general">
           <div class="form-grid two-col">
             <div class="form-field">
               <label for="cf-name">Name</label>
@@ -217,6 +218,7 @@
 <script src="js/listing-rules.js"></script>
 <script src="js/data.js"></script>
 <script src="js/listings.js"></script>
+<script src="js/enquiry-engine.js"></script>
 <script src="js/enquiry-form.js"></script>
 <script src="js/nav.js"></script>
 </body>

@@ -136,6 +136,28 @@
     qs('#enquire-module-input').value = item.module;
     qs('#enquiry-context-name').textContent = item.name;
 
+    /* enquiryType: 'stay' for every Tourism listing. For Real Estate, a
+       listing offered for both Buy and Lease lets the visitor pick which
+       they mean (a visible select, synced into the hidden field the form
+       actually submits); a listing offered under only one transaction type
+       sets it directly with no extra UI. */
+    var enquiryTypeInput = qs('#enquire-type-input');
+    var enquiryTypeField = qs('#enquire-type-field');
+    var enquiryTypeSelect = qs('#enquire-type-select');
+    if (item.module === 'tourism') {
+      enquiryTypeInput.value = 'stay';
+      enquiryTypeField.hidden = true;
+    } else if (item.transactionType.length > 1) {
+      enquiryTypeField.hidden = false;
+      enquiryTypeInput.value = enquiryTypeSelect.value;
+      enquiryTypeSelect.addEventListener('change', function () {
+        enquiryTypeInput.value = enquiryTypeSelect.value;
+      });
+    } else {
+      enquiryTypeInput.value = item.transactionType[0]; // 'buy' or 'lease'
+      enquiryTypeField.hidden = true;
+    }
+
     var related = window.AvanyaListingRules.findRelatedListings(item, data.ALL_LISTINGS);
     var relatedSection = qs('#related-panel');
     var relatedGrid = qs('#related-grid');

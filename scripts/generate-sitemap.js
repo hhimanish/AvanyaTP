@@ -35,6 +35,7 @@ var staticPages = [
   { loc: '/index.html', changefreq: 'weekly', priority: '1.0' },
   { loc: '/tourism.html', changefreq: 'weekly', priority: '0.9' },
   { loc: '/real-estate.html', changefreq: 'weekly', priority: '0.9' },
+  { loc: '/travel-plan.html', changefreq: 'monthly', priority: '0.6' },
   { loc: '/search.html', changefreq: 'monthly', priority: '0.4' },
   { loc: '/about.html', changefreq: 'monthly', priority: '0.6' },
   { loc: '/contact.html', changefreq: 'monthly', priority: '0.7' }
