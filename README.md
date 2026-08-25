@@ -81,6 +81,17 @@ There is no server-side includes mechanism in a pure static site, so the shared 
 
 **Update (Phase 3):** `sitemap.xml` is no longer hand-written — `scripts/generate-sitemap.js` regenerates it from `js/data.js`. **Update (Phase 5):** the per-listing entries now point at each listing's real static file (`/property/<slug>.html`) rather than a `?slug=` query string on one shared page — see the Phase 5 section below for why that distinction turned out to matter far more than just tidiness (31 URLs total as of this commit: 7 static pages + 24 listings). Run `node scripts/generate-sitemap.js` after adding, removing, or unpublishing a listing, and commit the regenerated file.
 
+## Roadmap note: Phase 8 (Hardening & Infrastructure) — deliberately not built
+
+Phase 8 is, in full, AWS production infrastructure: Terraform-provisioned VPC/ECS Fargate/RDS PostgreSQL Multi-AZ, an OIDC-based CI/CD pipeline deploying to it, CloudWatch logging/alerting, an RDS backup-restore drill, and an AWS WAF rate-based rule. Every exit criterion assumes a real AWS account, a real database, and real compute to hardened — none of which exist in this project, same category as Phase 1 (Auth/RBAC) and Phase 6 (Admin Panel): a zero-database, zero-backend static site has no server to harden, no database to back up, and no VPC to secure.
+
+What's real and already true, no new work needed:
+- **"CI/CD reaches production with no manual step, zero-downtime deploy"** — already satisfied. This repo's `git push` → Vercel's GitHub integration → live deploy pipeline has been in place since Phase 0, and Vercel's deployment model is atomic (a new deploy fully builds and passes health checks before traffic cuts over) — the same zero-downtime guarantee this exit criterion asks for, without ECS/Terraform to provide it.
+- **Anti-spam on the enquiry endpoint** — there's no backend endpoint of ours to put a WAF rule in front of; the enquiry form posts directly to Formspree, a third-party service outside this project's infrastructure. Formspree's own dashboard has built-in spam filtering (and an optional reCAPTCHA integration) — enabling that is the honest, actually-available equivalent of a WAF rate-based rule here, and is a real, concrete pre-launch recommendation, not something this codebase can configure itself.
+- **Uptime monitoring** — a free synthetic monitor (e.g. UptimeRobot, StatusCake, or Vercel's own built-in Analytics/uptime features) checking the homepage is the honest equivalent of the CloudWatch synthetic check this phase asks for. This requires the business's own account to set up — flagged as a concrete launch-readiness task, not fabricated as already done.
+
+What has no equivalent at all, stated plainly: centralised logging with correlation IDs, RDS backup/restore, and infrastructure-as-code drift detection all require a real backend and database to exist first. If a real backend is ever introduced (the same trigger point named in Phase 6's note), Phase 8 is where that backend's own production hardening would begin — not something to simulate against a static site today.
+
 ## Roadmap note: Phase 7 (Polish, Analytics & Phase-2-Ready Features)
 
 Phase 7 asks for analytics/conversion tracking, a real accessibility pass, a full-site cross-device re-verification, and a documentation-only check that BRD §26's Phase 2 features can be added later without breaking anything already built. All four had real, substantive work — this phase found and fixed two more genuine bugs on top of building the analytics layer from nothing.
